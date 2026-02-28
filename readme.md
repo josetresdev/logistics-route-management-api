@@ -22,7 +22,7 @@ docker compose up
 Eso es. El comando automáticamente:
 - ✅ Levanta PostgreSQL 16
 - ✅ Ejecuta migraciones de Django
-- ✅ Levanta el servidor Django en http://localhost:8000
+- ✅ Levanta el servidor Django en http://localhost:8080
 
 **Ver logs:**
 
@@ -66,7 +66,7 @@ python manage.py migrate
 python manage.py runserver 0.0.0.0:8000
 ```
 
-**Acceso**: http://localhost:8000
+**Acceso**: http://localhost:8080
 
 **Variables de entorno (automáticas desde .env)**:
 ```env
@@ -104,6 +104,18 @@ POST   /api/import-batch/upload/ - Importar rutas desde Excel
 
 GET    /api/execution-log/       - Registro de ejecuciones
 ```
+
+## 📚 Documentación de API
+
+Una vez ejecutando el servidor, accede a:
+
+| Servicio | URL | Descripción |
+|----------|-----|------------|
+| **Inicio** | http://localhost:8080/ | Dashboard de inicio |
+| **Swagger UI** | http://localhost:8080/api/docs/ | Documentación interactiva |
+| **ReDoc** | http://localhost:8080/api/redoc/ | Documentación estática |
+| **OpenAPI Schema** | http://localhost:8080/api/schema/ | Especificación OpenAPI 3.0 |
+| **Admin Panel** | http://localhost:8080/admin/ | Panel administrativo Django |
 
 ## 🏗️ Estructura del Proyecto
 
@@ -180,25 +192,25 @@ UNIQUE (origin, destination, time_window_start, time_window_end)
 ### Levantar BD con Docker Compose
 
 ```bash
-docker-compose up -d postgres
+docker compose up -d postgres
 ```
 
 Espera a que PostgreSQL esté listo. Puedes verificar con:
 
 ```bash
-docker-compose logs postgres
+docker compose logs postgres
 ```
 
 ### Detener los Servicios
 
 ```bash
-docker-compose down
+docker compose down
 ```
 
 ### Ver Logs
 
 ```bash
-docker-compose logs -f postgres
+docker compose logs -f postgres
 ```
 
 ## 📦 Dependencias Principales
@@ -217,7 +229,20 @@ Ver `requirements.txt` para lista completa.
 ### Ver Estado de Servicios Docker
 
 ```bash
-docker-compose ps
+docker compose ps
+```
+
+### Ver Logs en Tiempo Real
+
+```bash
+# Todos los servicios
+docker compose logs -f
+
+# Solo PostgreSQL
+docker compose logs -f postgres
+
+# Solo Django
+docker compose logs -f django
 ```
 
 ### Conectar a PostgreSQL
@@ -232,6 +257,25 @@ psql -h localhost -U postgres -d logistics
 python manage.py showmigrations
 ```
 
+### Logs de la Aplicación
+
+Los logs se guardan automáticamente en el directorio `logs/`:
+
+```
+logs/
+├── django.log      # Logs generales de Django
+├── error.log       # Errores capturados
+└── api.log         # Logs detallados de la API
+```
+
+**Ver logs en tiempo real (backend local):**
+
+```bash
+tail -f logs/django.log
+tail -f logs/error.log
+tail -f logs/api.log
+```
+
 ### Crear Superusuario
 
 ```bash
@@ -241,7 +285,7 @@ python manage.py createsuperuser
 ## 🚢 Despliegue en Producción
 
 ```bash
-docker-compose -f docker-compose.prod.yml up -d
+docker compose -f docker-compose.prod.yml up -d
 ```
 
 **Requisitos antes de producción**:

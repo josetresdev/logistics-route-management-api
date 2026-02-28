@@ -25,9 +25,11 @@ wheels/
 
 # Django
 *.log
+logs/
 local_settings.py
 db.sqlite3
 /media
+staticfiles/
 /staticfiles
 
 # Environment

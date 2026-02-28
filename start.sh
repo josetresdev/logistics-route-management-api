@@ -27,9 +27,9 @@ python manage.py migrate --noinput
 echo ""
 echo "=========================================="
 echo "  ✅ Servidor corriendo en:"
-echo "     http://localhost:8000"
+echo "     http://localhost:8080"
 echo "=========================================="
 echo ""
 
 # Iniciar servidor
-python manage.py runserver 0.0.0.0:8000
+python manage.py runserver 0.0.0.0:8080
