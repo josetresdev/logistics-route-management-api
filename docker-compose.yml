@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: logistics-db
+    environment:
+      POSTGRES_DB: logistics
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build: .
+    container_name: logistics-api
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py createsuperuser --noinput --username admin --email admin@example.com 2>/dev/null || true &&
+             gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 4"
+    ports:
+      - "8000:8000"
+    environment:
+      DEBUG: 'False'
+      SECRET_KEY: '${SECRET_KEY:-super-secret-key-change-in-production}'
+      ALLOWED_HOSTS: 'localhost,127.0.0.1'
+      DB_ENGINE: 'django.db.backends.postgresql'
+      DB_NAME: 'logistics'
+      DB_USER: 'postgres'
+      DB_PASSWORD: 'postgres'
+      DB_HOST: 'db'
+      DB_PORT: '5432'
+      DB_SCHEMA: 'logistics'
+      DJANGO_SUPERUSER_PASSWORD: 'admin123'
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - .:/app
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/routes/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
