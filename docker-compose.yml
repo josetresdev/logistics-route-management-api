@@ -21,5 +21,37 @@ services:
       timeout: 5s
       retries: 5
 
+  django:
+    build: .
+    container_name: logistics-django
+    command: >
+      sh -c "python manage.py migrate --noinput &&
+             python manage.py runserver 0.0.0.0:8000"
+    ports:
+      - "8000:8000"
+    environment:
+      DEBUG: "True"
+      SECRET_KEY: "django-insecure-development-key-change-in-production"
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_NAME: logistics
+      DATABASE_USER: postgres
+      DATABASE_PASSWORD: postgres
+      ALLOWED_HOSTS: "localhost,127.0.0.1,0.0.0.0"
+      DB_ENGINE: "django.db.backends.postgresql"
+      DB_NAME: "logistics"
+      DB_USER: "postgres"
+      DB_PASSWORD: "postgres"
+      DB_HOST: "postgres"
+      DB_PORT: "5432"
+      DB_SCHEMA: "logistics"
+      DJANGO_SETTINGS_MODULE: "config.settings"
+    volumes:
+      - .:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: on-failure
+
 volumes:
   logistics_pgdata:

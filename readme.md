@@ -11,63 +11,84 @@ Sistema de gestión y optimización de rutas de logística con Django REST Frame
 
 ## 🚀 Quick Start
 
-### 1. Clonar el Repositorio
+### Opción 1: TODO en UN COMANDO (Docker Compose)
+
+**BD + Backend automáticamente:**
 
 ```bash
-git clone https://github.com/josetresdev/logistics-route-management-api.git
-cd logistics-route-management-api
+docker compose up
 ```
 
-### 2. Instalar Dependencias
+Eso es. El comando automáticamente:
+- ✅ Levanta PostgreSQL 16
+- ✅ Ejecuta migraciones de Django
+- ✅ Levanta el servidor Django en http://localhost:8000
+
+**Ver logs:**
+
+```bash
+docker compose logs -f
+```
+
+**Detener todo:**
+
+```bash
+docker compose down
+```
+
+---
+
+### Opción 2: Backend Local + BD en Docker
+
+Si prefieres desarrollo local sin Docker para el backend:
+
+#### Paso 1: Levantar solo PostgreSQL
+
+```bash
+docker compose up -d postgres
+```
+
+#### Paso 2: Instalar dependencias locales (solo una vez)
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 3. Levantar la Base de Datos con Docker
+#### Paso 3: Ejecutar migraciones
 
 ```bash
-docker-compose up -d postgres
+python manage.py migrate
 ```
 
-Esto levantará PostgreSQL en `localhost:5432` con:
-- **Database**: logistics
-- **Usuario**: postgres
-- **Contraseña**: postgres
-- **Schema**: logistics (creado automáticamente)
-- **Datos iniciales**: Se importan automáticamente desde `db/init.sql`
-
-### 4. Configurar Variables de Entorno
-
-Copia el archivo `.env.example` a `.env`:
+#### Paso 4: Iniciar el servidor local
 
 ```bash
-cp .env.example .env
+python manage.py runserver 0.0.0.0:8000
 ```
 
-Las variables ya están configuradas para conectar a la BD local:
+**Acceso**: http://localhost:8000
 
+**Variables de entorno (automáticas desde .env)**:
 ```env
 DB_HOST=localhost
 DB_PORT=5432
 DB_NAME=logistics
 DB_USER=postgres
 DB_PASSWORD=postgres
+DEBUG=True
 ```
 
-### 5. Ejecutar Migraciones de Django
+---
 
-```bash
-python manage.py migrate
-```
+### Comparación: Docker vs Local
 
-### 6. Iniciar el Servidor de Desarrollo
-
-```bash
-python manage.py runserver 0.0.0.0:8000
-```
-
-El servidor estará disponible en: **http://localhost:8000**
+| Aspecto | Docker Compose | Backend Local |
+|--------|---|---|
+| **Comando** | `docker compose up` | `python manage.py runserver` |
+| **Setup** | Automático | Manual (pip install) |
+| **Pearl** | Aislado | Directo en máquina |
+| **Desarrollo** | Lento | Rápido (hot reload) |
+| **Producción** | ✅ Recomendado | ❌ No recomendado |
 
 ## 📡 Endpoints Principales
 
