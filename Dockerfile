@@ -28,7 +28,7 @@ RUN mkdir -p logs media staticfiles
 RUN python manage.py collectstatic --noinput
 
 # Expose port
-EXPOSE 8000
+EXPOSE 8080
 
-# Run Gunicorn
-CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "4", "--access-logfile", "logs/access.log", "--error-logfile", "logs/error.log"]
+# Run Gunicorn on port 8080
+CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8080", "--workers", "4", "--access-logfile", "logs/access.log", "--error-logfile", "logs/error.log"]

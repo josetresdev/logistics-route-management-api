@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Logistics Route Management API</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,8 +13,8 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: linear-gradient(135deg, #AAD500 0%, #ffffff 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -22,182 +23,135 @@
         }
 
         .container {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            max-width: 600px;
-            padding: 60px 40px;
-            text-align: center;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(170, 213, 0, 0.12);
+            max-width: 700px;
+            width: 100%;
+            padding: 56px 36px 40px 36px;
+            text-align: left;
+            border: 2px solid #AAD500;
         }
 
         h1 {
-            color: #333;
-            margin-bottom: 15px;
-            font-size: 2.5em;
+            color: #AAD500;
+            margin-bottom: 10px;
+            font-size: 2.7em;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-align: left;
         }
 
         .subtitle {
-            color: #666;
-            margin-bottom: 40px;
-            font-size: 1.1em;
+            color: #333;
+            margin-bottom: 32px;
+            font-size: 1.15em;
+            font-weight: 600;
+        }
+
+        .context {
+            background: #f7f7f7;
+            border-left: 5px solid #AAD500;
+            padding: 18px 22px;
+            margin-bottom: 32px;
+            font-size: 1.05em;
+            color: #222;
+        }
+
+        .section-title {
+            color: #AAD500;
+            font-size: 1.25em;
+            font-weight: 600;
+            margin-top: 32px;
+            margin-bottom: 12px;
         }
 
         .links {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 40px;
+            gap: 18px;
+            margin-bottom: 32px;
         }
 
         .link-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 25px;
+            background: #AAD500;
+            color: #fff;
+            padding: 22px;
             border-radius: 8px;
             text-decoration: none;
             transition: transform 0.3s, box-shadow 0.3s;
             cursor: pointer;
+            font-weight: 600;
+            border: 1px solid #e5e5e5;
+            font-size: 1.08em;
+            box-shadow: 0 2px 8px rgba(170, 213, 0, 0.08);
         }
 
         .link-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 6px 24px rgba(170, 213, 0, 0.18);
         }
 
-        .link-card h3 {
-            margin-bottom: 8px;
-            font-size: 1.2em;
+        .console {
+            font-family: 'Consolas', 'Menlo', 'Monaco', monospace;
+            background: #222;
+            color: #AAD500;
+            padding: 14px 18px;
+            border-radius: 6px;
+            font-size: 1em;
+            margin-bottom: 18px;
+            overflow-x: auto;
         }
 
-        .link-card p {
-            font-size: 0.9em;
-            opacity: 0.9;
+        ul {
+            margin-left: 18px;
+            margin-bottom: 18px;
         }
-
-        .link-card.admin {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        }
-
-        .link-card.admin:hover {
-            box-shadow: 0 10px 25px rgba(245, 87, 108, 0.4);
-        }
-
-        .info-box {
-            background: #f5f5f5;
-            padding: 30px;
-            border-radius: 8px;
-            text-align: left;
-            margin-bottom: 30px;
-        }
-
-        .info-box h2 {
-            color: #333;
-            margin-bottom: 15px;
-            font-size: 1.3em;
-        }
-
-        .info-box ul {
-            list-style: none;
-            color: #666;
-        }
-
-        .info-box li {
-            padding: 8px 0;
-            border-bottom: 1px solid #eee;
-        }
-
-        .info-box li:last-child {
-            border-bottom: none;
-        }
-
-        .info-box code {
-            background: #f0f0f0;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-family: 'Monaco', 'Courier New', monospace;
-            color: #667eea;
-        }
-
-        .version {
-            color: #999;
-            font-size: 0.9em;
-            margin-top: 20px;
-        }
-
-        .status {
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            background: #4caf50;
-            border-radius: 50%;
-            margin-right: 8px;
-        }
-
-        @media (max-width: 600px) {
-            .links {
-                grid-template-columns: 1fr;
-            }
-
-            h1 {
-                font-size: 1.8em;
-            }
-
-            .container {
-                padding: 40px 25px;
-            }
+        li {
+            margin-bottom: 7px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🚀 Logistics Route Management API</h1>
-        <p class="subtitle">Sistema de gestión y optimización de rutas logísticas</p>
-
-        <div class="info-box">
-            <h2><span class="status"></span> Estado del Servidor</h2>
-            <ul>
-                <li><strong>Base de Datos:</strong> ✅ Conectada</li>
-                <li><strong>API:</strong> ✅ Activa</li>
-                <li><strong>Documentación:</strong> ✅ Disponible</li>
-                <li><strong>Versión:</strong> 1.0.0 Producción</li>
+    <div class="container" style="margin:40px auto; max-width:1200px; width:98vw;">
+        <h1 style="font-size:2.1em; font-weight:800; color:#AAD500; margin-bottom:8px;">Logistics Route Management API</h1>
+        <div class="subtitle" style="font-size:1em; color:#222; margin-bottom:18px; font-weight:600;">Sistema profesional para la gestión y optimización de rutas logísticas.</div>
+        <div class="context" style="font-size:0.98em; margin-bottom:22px;">Esta prueba técnica consiste en construir un sistema web que permita gestionar el ciclo de vida de rutas logísticas desde su carga hasta su ejecución. El sistema debe recibir información en archivos Excel, validar la calidad de los datos, reportar errores, persistir registros válidos y exponer APIs REST para la operación y consulta. El objetivo es resolver problemas de datos inconsistentes, falta de trazabilidad y control centralizado, facilitando la toma de decisiones y la auditoría de resultados.</div>
+        <div style="background:#f7f7f7; border-radius:18px; border:2px solid #AAD500; padding:38px 38px 32px 38px; margin-bottom:32px; box-shadow:0 8px 32px rgba(170,213,0,0.10); animation:fadein 0.7s;">
+            <div class="section-title" style="margin-top:0; font-size:1.08em;">Estado del servidor</div>
+            <ul style="margin-bottom:22px; font-size:0.97em;">
+                <li style="margin-bottom:7px; display:flex; align-items:center;"><span style="display:inline-block;width:16px;height:16px;background:#43d167;border-radius:50%;margin-right:8px;"></span>La base de datos está conectada.</li>
+                <li style="margin-bottom:7px; display:flex; align-items:center;"><span style="display:inline-block;width:16px;height:16px;background:#43d167;border-radius:50%;margin-right:8px;"></span>La API está activa.</li>
+                <li style="margin-bottom:7px; display:flex; align-items:center;"><span style="display:inline-block;width:16px;height:16px;background:#43d167;border-radius:50%;margin-right:8px;"></span>La documentación está disponible.</li>
+                <li style="margin-bottom:7px; display:flex; align-items:center;"><span style="display:inline-block;width:16px;height:16px;background:#43d167;border-radius:50%;margin-right:8px;"></span>Versión 1.0.0 Producción.</li>
             </ul>
-        </div>
-
-        <div class="links">
-            <a href="/api/docs/" class="link-card">
-                <h3>📚 Swagger UI</h3>
-                <p>Documentación interactiva de API</p>
-            </a>
-            <a href="/api/redoc/" class="link-card">
-                <h3>📖 ReDoc</h3>
-                <p>Documentación estática detallada</p>
-            </a>
-            <a href="/admin/" class="link-card admin">
-                <h3>🔧 Admin Panel</h3>
-                <p>Panel de administración Django</p>
-            </a>
-            <a href="/api/schema/" class="link-card admin">
-                <h3>⚙️ OpenAPI Schema</h3>
-                <p>Especificación OpenAPI 3.0</p>
-            </a>
-        </div>
-
-        <div class="info-box">
-            <h2>🔗 Endpoints Principales</h2>
-            <ul>
-                <li><code>GET /api/routes/</code> - Listar todas las rutas</li>
-                <li><code>POST /api/routes/</code> - Crear nueva ruta</li>
-                <li><code>GET /api/execution-logs/</code> - Historial de ejecuciones</li>
-                <li><code>POST /api/import-batches/</code> - Importar desde Excel</li>
-                <li><code>GET /api/docs/</code> - Documentación interactiva</li>
+            <div class="section-title" style="font-size:1.08em;">Accesos rápidos</div>
+            <div class="links" style="margin-bottom:22px; grid-template-columns:repeat(4,1fr);">
+                <a class="link-card" href="/api/docs/" style="font-size:0.97em;">Swagger UI</a>
+                <a class="link-card" href="/api/redoc/" style="font-size:0.97em;">ReDoc</a>
+                <a class="link-card" href="/api/schema/" style="font-size:0.97em;">OpenAPI Schema</a>
+                <a class="link-card" href="/admin/" style="font-size:0.97em;">Panel de administración</a>
+            </div>
+            <div class="section-title" style="font-size:1.08em;">Comandos principales</div>
+            <div class="console" style="font-size:0.97em;">docker compose up</div>
+            <div class="console" style="font-size:0.97em;">docker compose logs -f</div>
+            <div class="console" style="font-size:0.97em;">docker compose down</div>
+            <div class="section-title" style="font-size:1.08em;">Endpoints principales</div>
+            <ul style="font-size:0.97em;">
+                <li><span class="console" style="font-size:0.97em;">GET /api/routes/</span> Listar todas las rutas.</li>
+                <li><span class="console" style="font-size:0.97em;">POST /api/routes/</span> Crear una nueva ruta.</li>
+                <li><span class="console" style="font-size:0.97em;">POST /api/routes/import</span> Importar rutas desde Excel.</li>
+                <li><span class="console" style="font-size:0.97em;">POST /api/routes/execute</span> Ejecutar rutas seleccionadas.</li>
+                <li><span class="console" style="font-size:0.97em;">GET /api/execution-logs/</span> Consultar logs de ejecución.</li>
             </ul>
+            <div class="section-title" style="font-size:1.08em;">Autor</div>
+            <div style="font-size:0.97em;font-weight:600;color:#222;margin-bottom:8px;">Jose Trespalacios B. <a href="https://www.josetrespalaciosbedoya.co/" style="color:#AAD500;text-decoration:none;">Full Stack Developer</a></div>
+            <div style="font-size:0.93em;color:#555;">Última actualización: Febrero 2026 &mdash; Versión 1.0.0 Producción</div>
         </div>
-
-        <p class="version">
-            Última actualización: Febrero 2026 |
-            <a href="https://github.com/josetresdev/logistics-route-management-api"
-               style="color: #667eea; text-decoration: none;">Ver en GitHub</a>
-        </p>
+    </div>
+    <style>
+        @keyframes fadein { from { opacity:0; transform:scale(0.98);} to { opacity:1; transform:scale(1);} }
+    </style>
     </div>
 </body>
 </html>

@@ -65,12 +65,6 @@ python manage.py migrate
 ```bash
 python manage.py runserver 0.0.0.0:8000
 ```
-
-**Acceso**: http://localhost:8080
-
-**Variables de entorno (automáticas desde .env)**:
-```env
-DB_HOST=localhost
 DB_PORT=5432
 DB_NAME=logistics
 DB_USER=postgres
@@ -159,7 +153,6 @@ El proyecto implementa dos patrones de arquitectura complementarios:
 
 ## 🔧 Configuración de la Base de Datos
 
-### Schema Principal: `logistics`
 
 **Tablas**:
 - `route_status` - Catálogo de estados
