@@ -40,7 +40,7 @@ from apps.routes.infrastructure.repositories import (
 class RouteViewSet(viewsets.ModelViewSet):
     """
     ViewSet para gestionar rutas.
-    
+
     Operaciones disponibles:
     - GET /routes/ - Listar rutas
     - POST /routes/ - Crear ruta
@@ -52,7 +52,7 @@ class RouteViewSet(viewsets.ModelViewSet):
     - POST /routes/import_routes/ - Importar desde Excel
     - GET /routes/{id}/execution_history/ - Historial de ejecuciones
     """
-    
+
     queryset = Route.objects.all()
     permission_classes = [permissions.IsAuthenticated]
     filterset_class = RouteFilterSet
@@ -83,38 +83,50 @@ class RouteViewSet(viewsets.ModelViewSet):
             "status",
             "batch"
         )
-        
+
         if self.action == "retrieve":
             queryset = queryset.prefetch_related("execution_logs")
-        
+
         return queryset
 
     def list(self, request, *args, **kwargs):
         """
         Lista rutas con filtros y búsqueda.
-        
-        Query Parameters:
-        - status: Código de estado (PENDING, IN_PROGRESS, COMPLETED, FAILED)
-        - priority: Nivel de prioridad (1, 2, 3, 4)
-        - origin: ID de ubicación origen
-        - destination: ID de ubicación destino
-        - created_after: Fecha mínima de creación
-        - created_before: Fecha máxima de creación
-        - search: Búsqueda en nombre de ubicación
-        - ordering: Campo para ordenar (-created_at, priority, status)
         """
-        return super().list(request, *args, **kwargs)
+        queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
+        from apps.routes.utils.response import ResponseHelper, PaginationMeta, SortMeta
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            pagination = PaginationMeta(
+                current_page=int(request.query_params.get('page', 1)),
+                per_page=self.paginator.page_size if hasattr(self, 'paginator') else len(page),
+                total_items=self.paginator.page.paginator.count if hasattr(self, 'paginator') else len(queryset),
+                total_pages=self.paginator.page.paginator.num_pages if hasattr(self, 'paginator') else 1,
+            )
+            sort = None
+            ordering = request.query_params.get('ordering')
+            if ordering:
+                sort = SortMeta(sort_by=ordering.lstrip('-'), sort_order='DESC' if ordering.startswith('-') else 'ASC')
+            return self.get_paginated_response(
+                ResponseHelper.ok(serializer.data, message="Listado de rutas", pagination=pagination, sort=sort)
+            )
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(
+            ResponseHelper.ok(serializer.data, message="Listado de rutas"),
+            status=status.HTTP_200_OK
+        )
 
     @action(detail=False, methods=["post"])
     def execute(self, request):
         """
         Ejecuta múltiples rutas.
-        
+
         Request Body:
         {
             "route_ids": [1, 2, 3]
         }
-        
+
         Response:
         {
             "data": {
@@ -130,32 +142,32 @@ class RouteViewSet(viewsets.ModelViewSet):
         """
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        
+
         route_ids = serializer.validated_data.get("route_ids")
-        
+
         try:
             result = RouteService.execute_routes(route_ids)
-            return Response({
-                "data": result,
-                "errors": None,
-                "status": status.HTTP_200_OK
-            }, status=status.HTTP_200_OK)
+            from apps.routes.utils.response import ResponseHelper
+            return Response(
+                ResponseHelper.ok(result, message="Rutas ejecutadas correctamente"),
+                status=status.HTTP_200_OK
+            )
         except Exception as e:
-            return Response({
-                "data": None,
-                "errors": {"detail": str(e)},
-                "status": status.HTTP_400_BAD_REQUEST
-            }, status=status.HTTP_400_BAD_REQUEST)
+            from apps.routes.utils.response import ResponseHelper
+            return Response(
+                ResponseHelper.error(str(e), code="EXECUTION_ERROR", status_code=status.HTTP_400_BAD_REQUEST),
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
     @action(detail=False, methods=["post"], url_path="import_routes")
     def import_routes(self, request):
         """
         Importa rutas desde archivo Excel.
-        
+
         Multipart Form Data:
         - file: Archivo Excel (.xls o .xlsx)
         - batch_name: (opcional) Nombre del lote
-        
+
         Response:
         {
             "data": {
@@ -172,29 +184,29 @@ class RouteViewSet(viewsets.ModelViewSet):
         """
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        
+
         file = serializer.validated_data.get("file")
         batch_name = serializer.validated_data.get("batch_name")
-        
+
         try:
             result = ImportService.import_file(file, batch_name)
-            return Response({
-                "data": result,
-                "errors": None,
-                "status": status.HTTP_201_CREATED
-            }, status=status.HTTP_201_CREATED)
+            from apps.routes.utils.response import ResponseHelper
+            return Response(
+                ResponseHelper.created(result, message="Importación completada"),
+                status=status.HTTP_201_CREATED
+            )
         except Exception as e:
-            return Response({
-                "data": None,
-                "errors": {"detail": str(e)},
-                "status": status.HTTP_400_BAD_REQUEST
-            }, status=status.HTTP_400_BAD_REQUEST)
+            from apps.routes.utils.response import ResponseHelper
+            return Response(
+                ResponseHelper.error(str(e), code="IMPORT_ERROR", status_code=status.HTTP_400_BAD_REQUEST),
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
     @action(detail=True, methods=["get"], url_path="execution_history")
     def execution_history(self, request, pk=None):
         """
         Obtiene historial de ejecuciones de una ruta.
-        
+
         Response:
         {
             "data": [
@@ -215,24 +227,24 @@ class RouteViewSet(viewsets.ModelViewSet):
         try:
             route = self.get_object()
             history = ExecutionService.get_execution_history(route.id)
-            
-            return Response({
-                "data": history,
-                "errors": None,
-                "status": status.HTTP_200_OK
-            }, status=status.HTTP_200_OK)
+
+            from apps.routes.utils.response import ResponseHelper
+            return Response(
+                ResponseHelper.ok(history, message="Historial de ejecuciones obtenido"),
+                status=status.HTTP_200_OK
+            )
         except Route.DoesNotExist:
-            return Response({
-                "data": None,
-                "errors": {"detail": "Route not found"},
-                "status": status.HTTP_404_NOT_FOUND
-            }, status=status.HTTP_404_NOT_FOUND)
+            from apps.routes.utils.response import ResponseHelper
+            return Response(
+                ResponseHelper.error("Route not found", code="NOT_FOUND", status_code=status.HTTP_404_NOT_FOUND),
+                status=status.HTTP_404_NOT_FOUND
+            )
 
     @action(detail=False, methods=["get"])
     def statistics(self, request):
         """
         Obtiene estadísticas globales de rutas.
-        
+
         Response:
         {
             "data": {
@@ -251,12 +263,12 @@ class RouteViewSet(viewsets.ModelViewSet):
         }
         """
         stats = RouteRepository.get_statistics()
-        
-        return Response({
-            "data": stats,
-            "errors": None,
-            "status": status.HTTP_200_OK
-        }, status=status.HTTP_200_OK)
+
+        from apps.routes.utils.response import ResponseHelper
+        return Response(
+            ResponseHelper.ok(stats, message="Estadísticas obtenidas"),
+            status=status.HTTP_200_OK
+        )
 
 
 class RouteStatusViewSet(viewsets.ReadOnlyModelViewSet):
@@ -265,12 +277,42 @@ class RouteStatusViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = RouteStatusSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
+        from apps.routes.utils.response import ResponseHelper
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(
+                ResponseHelper.ok(serializer.data, message="Listado de estados de ruta")
+            )
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(
+            ResponseHelper.ok(serializer.data, message="Listado de estados de ruta"),
+            status=status.HTTP_200_OK
+        )
+
 
 class PriorityCatalogViewSet(viewsets.ReadOnlyModelViewSet):
     """ViewSet de lectura para catálogo de prioridades."""
     queryset = PriorityCatalog.objects.all()
     serializer_class = PriorityCatalogSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
+        from apps.routes.utils.response import ResponseHelper
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(
+                ResponseHelper.ok(serializer.data, message="Listado de prioridades")
+            )
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(
+            ResponseHelper.ok(serializer.data, message="Listado de prioridades"),
+            status=status.HTTP_200_OK
+        )
 
 
 class GeographicLocationViewSet(viewsets.ReadOnlyModelViewSet):
@@ -281,6 +323,21 @@ class GeographicLocationViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = [SearchFilter]
     search_fields = ["name", "address"]
 
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
+        from apps.routes.utils.response import ResponseHelper
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(
+                ResponseHelper.ok(serializer.data, message="Listado de ubicaciones geográficas")
+            )
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(
+            ResponseHelper.ok(serializer.data, message="Listado de ubicaciones geográficas"),
+            status=status.HTTP_200_OK
+        )
+
 
 class ExecutionLogViewSet(viewsets.ReadOnlyModelViewSet):
     """ViewSet de lectura para registros de ejecución."""
@@ -290,6 +347,21 @@ class ExecutionLogViewSet(viewsets.ReadOnlyModelViewSet):
     filterset_fields = ["route", "result"]
     filter_backends = [DjangoFilterBackend]
 
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
+        from apps.routes.utils.response import ResponseHelper
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(
+                ResponseHelper.ok(serializer.data, message="Listado de ejecuciones")
+            )
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(
+            ResponseHelper.ok(serializer.data, message="Listado de ejecuciones"),
+            status=status.HTTP_200_OK
+        )
+
 
 class ImportBatchViewSet(viewsets.ReadOnlyModelViewSet):
     """ViewSet de lectura para lotes de importación."""
@@ -298,3 +370,18 @@ class ImportBatchViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     filterset_fields = ["status"]
     filter_backends = [DjangoFilterBackend]
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
+        from apps.routes.utils.response import ResponseHelper
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(
+                ResponseHelper.ok(serializer.data, message="Listado de lotes de importación")
+            )
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(
+            ResponseHelper.ok(serializer.data, message="Listado de lotes de importación"),
+            status=status.HTTP_200_OK
+        )

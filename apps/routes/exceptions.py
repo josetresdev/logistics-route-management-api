@@ -31,16 +31,21 @@ class ExecutionError(APIException):
 def custom_exception_handler(exc, context):
     """
     Custom exception handler for standardized API responses.
-    
+
     Returns a standardized error response for all exceptions.
     """
+    from apps.routes.utils.response import ResponseHelper, ErrorResponse
     response = exception_handler(exc, context)
-    
     if response is not None:
-        response.data = {
-            "data": None,
-            "errors": response.data,
-            "status": response.status_code,
-        }
-    
+        # DRF default error dict
+        error_detail = response.data
+        code = getattr(exc, 'default_code', 'error')
+        message = str(error_detail.get('detail', error_detail)) if isinstance(error_detail, dict) else str(error_detail)
+        error_response = ResponseHelper.error(
+            message=message,
+            code=code.upper(),
+            status_code=response.status_code,
+            details=error_detail
+        )
+        response.data = error_response
     return response
