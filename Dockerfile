@@ -30,5 +30,10 @@ RUN python manage.py collectstatic --noinput
 # Expose port
 EXPOSE 8080
 
-# Run Gunicorn on port 8080
-CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8080", "--workers", "4", "--access-logfile", "logs/access.log", "--error-logfile", "logs/error.log"]
+
+# Copia el entrypoint y da permisos de ejecución
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# Usa el entrypoint robusto
+ENTRYPOINT ["/entrypoint.sh"]

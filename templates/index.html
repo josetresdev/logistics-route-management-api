@@ -4,8 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Logistics Route Management API</title>
+    <meta name="description" content="Sistema profesional de gestión y optimización de rutas logísticas con Django REST Framework.">
+
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+
     <style>
+        :root {
+            --primary: #AAD500;
+            --primary-dark: #7fa800;
+            --success: #43d167;
+            --bg-light: #f7f7f7;
+            --text-dark: #222;
+            --shadow: 0 8px 32px rgba(170,213,0,0.12);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -13,145 +25,311 @@
         }
 
         body {
-            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
-            background: linear-gradient(135deg, #AAD500 0%, #ffffff 100%);
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, #ffffff 100%);
             min-height: 100vh;
             display: flex;
-            align-items: center;
             justify-content: center;
-            padding: 20px;
+            padding: 40px 16px;
         }
 
         .container {
             background: #fff;
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(170, 213, 0, 0.12);
-            max-width: 700px;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            max-width: 1200px;
             width: 100%;
-            padding: 56px 36px 40px 36px;
-            text-align: left;
-            border: 2px solid #AAD500;
+            padding: 60px 40px 48px;
+            border: 2px solid var(--primary);
+            animation: fadein 0.4s ease-in-out;
         }
 
         h1 {
-            color: #AAD500;
-            margin-bottom: 10px;
-            font-size: 2.7em;
+            color: var(--primary);
+            font-size: 2.1rem;
             font-weight: 800;
-            letter-spacing: 1px;
-            text-align: left;
+            margin-bottom: 8px;
         }
 
         .subtitle {
-            color: #333;
-            margin-bottom: 32px;
-            font-size: 1.15em;
+            font-size: 1rem;
             font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 18px;
         }
 
         .context {
-            background: #f7f7f7;
-            border-left: 5px solid #AAD500;
+            background: var(--bg-light);
+            border-left: 5px solid var(--primary);
             padding: 18px 22px;
+            margin-bottom: 28px;
+            font-size: 0.98rem;
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .content-card {
+            background: var(--bg-light);
+            border-radius: 18px;
+            border: 2px solid var(--primary);
+            padding: 38px 38px 32px;
             margin-bottom: 32px;
-            font-size: 1.05em;
-            color: #222;
+            box-shadow: var(--shadow);
         }
 
         .section-title {
-            color: #AAD500;
-            font-size: 1.25em;
-            font-weight: 600;
+            color: var(--primary);
+            font-size: 1.08rem;
+            font-weight: 700;
             margin-top: 32px;
             margin-bottom: 12px;
         }
 
-        .links {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 18px;
-            margin-bottom: 32px;
-        }
-
-        .link-card {
-            background: #AAD500;
-            color: #fff;
-            padding: 22px;
-            border-radius: 8px;
-            text-decoration: none;
-            transition: transform 0.3s, box-shadow 0.3s;
-            cursor: pointer;
-            font-weight: 600;
-            border: 1px solid #e5e5e5;
-            font-size: 1.08em;
-            box-shadow: 0 2px 8px rgba(170, 213, 0, 0.08);
-        }
-
-        .link-card:hover {
-            transform: translateY(-2px) scale(1.03);
-            box-shadow: 0 6px 24px rgba(170, 213, 0, 0.18);
-        }
-
-        .console {
-            font-family: 'Consolas', 'Menlo', 'Monaco', monospace;
-            background: #222;
-            color: #AAD500;
-            padding: 14px 18px;
-            border-radius: 6px;
-            font-size: 1em;
-            margin-bottom: 18px;
-            overflow-x: auto;
+        .section-title:first-child {
+            margin-top: 0;
         }
 
         ul {
             margin-left: 18px;
             margin-bottom: 18px;
         }
+
         li {
-            margin-bottom: 7px;
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+
+        .status-list li {
+            display: flex;
+            align-items: center;
+            list-style: none;
+        }
+
+        .status-dot {
+            width: 14px;
+            height: 14px;
+            background: var(--success);
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 18px;
+            margin-bottom: 28px;
+        }
+
+        .link-card {
+            background: var(--primary);
+            color: #fff;
+            padding: 16px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.25s ease;
+        }
+
+        .link-card:hover {
+            background: var(--primary-dark);
+            transform: translateY(-3px);
+        }
+
+        .console {
+            font-family: Consolas, monospace;
+            background: #222;
+            color: var(--primary);
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            display: inline-block;
+        }
+
+        .endpoints-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            margin-top: 18px;
+        }
+
+        .endpoint-card {
+            background: #fff;
+            border: 2px solid var(--primary);
+            border-radius: 14px;
+            padding: 22px;
+            transition: 0.3s ease;
+        }
+
+        .endpoint-card:hover {
+            box-shadow: var(--shadow);
+            border-color: var(--primary-dark);
+        }
+
+        .endpoint-method {
+            display: inline-block;
+            font-weight: 700;
+            font-size: 0.8rem;
+            padding: 4px 12px;
+            border-radius: 8px;
+            margin-bottom: 6px;
+            color: #fff;
+        }
+
+        .endpoint-method.get { background: var(--success); }
+        .endpoint-method.post { background: var(--primary); }
+
+        .endpoint-path {
+            font-family: Consolas, monospace;
+            background: #e9f7c7;
+            color: var(--primary-dark);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+            display: inline-block;
+        }
+
+        .endpoint-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .endpoint-desc {
+            font-size: 0.95rem;
+            color: #444;
+            margin-bottom: 6px;
+        }
+
+        .endpoint-detail {
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+        }
+
+        .author {
+            margin-top: 32px;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .author a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .meta {
+            font-size: 0.85rem;
+            color: #555;
+            margin-top: 6px;
+        }
+
+        @keyframes fadein {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 40px 20px;
+            }
         }
     </style>
 </head>
+
 <body>
-    <div class="container" style="margin:40px auto; max-width:1200px; width:98vw;">
-        <h1 style="font-size:2.1em; font-weight:800; color:#AAD500; margin-bottom:8px;">Logistics Route Management API</h1>
-        <div class="subtitle" style="font-size:1em; color:#222; margin-bottom:18px; font-weight:600;">Sistema profesional para la gestión y optimización de rutas logísticas.</div>
-        <div class="context" style="font-size:0.98em; margin-bottom:22px;">Esta prueba técnica consiste en construir un sistema web que permita gestionar el ciclo de vida de rutas logísticas desde su carga hasta su ejecución. El sistema debe recibir información en archivos Excel, validar la calidad de los datos, reportar errores, persistir registros válidos y exponer APIs REST para la operación y consulta. El objetivo es resolver problemas de datos inconsistentes, falta de trazabilidad y control centralizado, facilitando la toma de decisiones y la auditoría de resultados.</div>
-        <div style="background:#f7f7f7; border-radius:18px; border:2px solid #AAD500; padding:38px 38px 32px 38px; margin-bottom:32px; box-shadow:0 8px 32px rgba(170,213,0,0.10); animation:fadein 0.7s;">
-            <div class="section-title" style="margin-top:0; font-size:1.08em;">Estado del servidor</div>
-            <ul style="margin-bottom:22px; font-size:0.97em;">
-                <li style="margin-bottom:7px; display:flex; align-items:center;"><span style="display:inline-block;width:16px;height:16px;background:#43d167;border-radius:50%;margin-right:8px;"></span>La base de datos está conectada.</li>
-                <li style="margin-bottom:7px; display:flex; align-items:center;"><span style="display:inline-block;width:16px;height:16px;background:#43d167;border-radius:50%;margin-right:8px;"></span>La API está activa.</li>
-                <li style="margin-bottom:7px; display:flex; align-items:center;"><span style="display:inline-block;width:16px;height:16px;background:#43d167;border-radius:50%;margin-right:8px;"></span>La documentación está disponible.</li>
-                <li style="margin-bottom:7px; display:flex; align-items:center;"><span style="display:inline-block;width:16px;height:16px;background:#43d167;border-radius:50%;margin-right:8px;"></span>Versión 1.0.0 Producción.</li>
-            </ul>
-            <div class="section-title" style="font-size:1.08em;">Accesos rápidos</div>
-            <div class="links" style="margin-bottom:22px; grid-template-columns:repeat(4,1fr);">
-                <a class="link-card" href="/api/docs/" style="font-size:0.97em;">Swagger UI</a>
-                <a class="link-card" href="/api/redoc/" style="font-size:0.97em;">ReDoc</a>
-                <a class="link-card" href="/api/schema/" style="font-size:0.97em;">OpenAPI Schema</a>
-                <a class="link-card" href="/admin/" style="font-size:0.97em;">Panel de administración</a>
-            </div>
-            <div class="section-title" style="font-size:1.08em;">Comandos principales</div>
-            <div class="console" style="font-size:0.97em;">docker compose up</div>
-            <div class="console" style="font-size:0.97em;">docker compose logs -f</div>
-            <div class="console" style="font-size:0.97em;">docker compose down</div>
-            <div class="section-title" style="font-size:1.08em;">Endpoints principales</div>
-            <ul style="font-size:0.97em;">
-                <li><span class="console" style="font-size:0.97em;">GET /api/routes/</span> Listar todas las rutas.</li>
-                <li><span class="console" style="font-size:0.97em;">POST /api/routes/</span> Crear una nueva ruta.</li>
-                <li><span class="console" style="font-size:0.97em;">POST /api/routes/import</span> Importar rutas desde Excel.</li>
-                <li><span class="console" style="font-size:0.97em;">POST /api/routes/execute</span> Ejecutar rutas seleccionadas.</li>
-                <li><span class="console" style="font-size:0.97em;">GET /api/execution-logs/</span> Consultar logs de ejecución.</li>
-            </ul>
-            <div class="section-title" style="font-size:1.08em;">Autor</div>
-            <div style="font-size:0.97em;font-weight:600;color:#222;margin-bottom:8px;">Jose Trespalacios B. <a href="https://www.josetrespalaciosbedoya.co/" style="color:#AAD500;text-decoration:none;">Full Stack Developer</a></div>
-            <div style="font-size:0.93em;color:#555;">Última actualización: Febrero 2026 &mdash; Versión 1.0.0 Producción</div>
+<div class="container">
+
+    <h1>Logistics Route Management API</h1>
+    <div class="subtitle">
+        Sistema profesional para la gestión, validación y ejecución de rutas logísticas.
+    </div>
+
+    <div class="context">
+        Esta aplicación permite administrar el ciclo completo de rutas: carga desde archivos Excel,
+        validación de calidad de datos, almacenamiento persistente en PostgreSQL y exposición
+        de APIs REST para operación, consulta y auditoría.
+        Diseñada bajo principios de arquitectura limpia y separación de responsabilidades.
+    </div>
+
+    <div class="content-card">
+
+        <div class="section-title">Estado del servidor</div>
+        <ul class="status-list">
+            <li><span class="status-dot"></span>Base de datos PostgreSQL conectada</li>
+            <li><span class="status-dot"></span>API REST activa</li>
+            <li><span class="status-dot"></span>Documentación OpenAPI disponible</li>
+            <li><span class="status-dot"></span>Versión 1.0.0 - Producción</li>
+        </ul>
+
+        <div class="section-title">Accesos rápidos</div>
+        <div class="links">
+            <a class="link-card" href="/api/docs/">Swagger UI</a>
+            <a class="link-card" href="/api/redoc/">ReDoc</a>
+            <a class="link-card" href="/api/schema/">OpenAPI Schema</a>
+            <a class="link-card" href="/admin/">Panel Administrativo</a>
         </div>
+
+        <div class="section-title">Instalación y ejecución con Docker</div>
+        <ul>
+            <li>Clonar repositorio: <span class="console">git clone &lt;repo-url&gt;</span></li>
+            <li>Construir y ejecutar servicios: <span class="console">docker compose up --build</span></li>
+            <li>Ver logs en tiempo real: <span class="console">docker compose logs -f</span></li>
+            <li>Detener servicios: <span class="console">docker compose down</span></li>
+        </ul>
+
+        <div class="section-title">Endpoints principales</div>
+        <div class="endpoints-grid">
+
+            <div class="endpoint-card">
+                <div class="endpoint-method post">POST</div>
+                <div class="endpoint-path">/api/token-auth/</div>
+                <div class="endpoint-title">Obtener token de autenticación</div>
+                <div class="endpoint-desc">
+                    Permite autenticarse y recibir un token para consumir la API.
+                </div>
+            </div>
+
+            <div class="endpoint-card">
+                <div class="endpoint-method get">GET</div>
+                <div class="endpoint-path">/api/routes/</div>
+                <div class="endpoint-title">Listar rutas</div>
+                <div class="endpoint-desc">
+                    Devuelve todas las rutas registradas en el sistema.
+                </div>
+            </div>
+
+            <div class="endpoint-card">
+                <div class="endpoint-method post">POST</div>
+                <div class="endpoint-path">/api/routes/import</div>
+                <div class="endpoint-title">Importar rutas desde Excel</div>
+                <div class="endpoint-desc">
+                    Carga masiva de rutas con validación automática de datos.
+                </div>
+            </div>
+
+            <div class="endpoint-card">
+                <div class="endpoint-method get">GET</div>
+                <div class="endpoint-path">/api/execution-logs/</div>
+                <div class="endpoint-title">Consultar registros de ejecución</div>
+                <div class="endpoint-desc">
+                    Permite auditar ejecuciones y revisar resultados históricos.
+                </div>
+            </div>
+
+        </div>
+
+        <div class="section-title">Autor</div>
+        <div class="author">
+            Jose Trespalacios B. —
+            <a href="https://www.josetrespalaciosbedoya.co/">Full Stack Developer</a>
+        </div>
+        <div class="meta">
+            Última actualización: Febrero 2026 — Versión 1.0.0 Producción
+        </div>
+
     </div>
-    <style>
-        @keyframes fadein { from { opacity:0; transform:scale(0.98);} to { opacity:1; transform:scale(1);} }
-    </style>
-    </div>
+
+</div>
 </body>
 </html>

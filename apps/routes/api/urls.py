@@ -1,5 +1,7 @@
+
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
+from rest_framework.authtoken.views import obtain_auth_token
 from apps.routes.api.views import (
     RouteViewSet,
     RouteStatusViewSet,
@@ -20,4 +22,5 @@ router.register(r"import-batches", ImportBatchViewSet, basename="import-batch")
 
 urlpatterns = [
     path("", include(router.urls)),
+    path("token-auth/", obtain_auth_token),
 ]

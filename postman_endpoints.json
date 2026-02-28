@@ -1,0 +1,121 @@
+{
+  "info": {
+    "name": "Logistics Route Management API",
+    "description": "Postman collection for all main endpoints of the Logistics Route Management API.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Obtain Auth Token",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/token-auth/",
+          "host": ["{{base_url}}"],
+          "path": ["api", "token-auth", ""]
+        }
+      },
+      "response": [
+        {
+          "name": "Token Response",
+          "originalRequest": {},
+          "status": "200 OK",
+          "code": 200,
+          "body": "{\n  \"token\": \"<token>\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "List Routes",
+      "request": {
+        "method": "GET",
+        "header": [
+          {"key": "Authorization", "value": "Token {{auth_token}}", "type": "text"}
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/routes/",
+          "host": ["{{base_url}}"],
+          "path": ["api", "routes", ""]
+        }
+      }
+    },
+    {
+      "name": "Create Route",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"},
+          {"key": "Authorization", "value": "Token {{auth_token}}", "type": "text"}
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"origin_id\": 1,\n  \"destination_id\": 2,\n  \"priority_id\": 1,\n  \"status_id\": 1\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/routes/",
+          "host": ["{{base_url}}"],
+          "path": ["api", "routes", ""]
+        }
+      }
+    },
+    {
+      "name": "Import Routes from Excel",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Content-Type", "value": "multipart/form-data"},
+          {"key": "Authorization", "value": "Token {{auth_token}}", "type": "text"}
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {"key": "file", "type": "file", "src": ""}
+          ]
+        },
+        "url": {
+          "raw": "{{base_url}}/api/routes/import",
+          "host": ["{{base_url}}"],
+          "path": ["api", "routes", "import"]
+        }
+      }
+    },
+    {
+      "name": "Execute Routes",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"},
+          {"key": "Authorization", "value": "Token {{auth_token}}", "type": "text"}
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"route_ids\": [1, 2, 3]\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/routes/execute",
+          "host": ["{{base_url}}"],
+          "path": ["api", "routes", "execute"]
+        }
+      }
+    },
+    {
+      "name": "Get Execution Logs",
+      "request": {
+        "method": "GET",
+        "header": [
+          {"key": "Authorization", "value": "Token {{auth_token}}", "type": "text"}
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/execution-logs/",
+          "host": ["{{base_url}}"],
+          "path": ["api", "execution-logs", ""]
+        }
+      }
+    }
+  ]
+}

@@ -117,10 +117,10 @@ Una vez ejecutando el servidor, accede a:
 .
 ├── apps/
 │   └── routes/
-│       ├── domain/          # Modelos ORM (MTV Model)
+│       ├── domain/          # Modelos ORM (MVT Model)
 │       ├── application/     # Lógica de negocio (DDD)
 │       ├── infrastructure/  # Acceso a datos
-│       └── api/             # Serializers y Views (MTV View/Template)
+│       └── api/             # Serializers y Views (MVT View/Template)
 ├── config/
 │   ├── settings.py         # Configuración Django
 │   ├── urls.py             # URLs principales
@@ -138,11 +138,11 @@ Una vez ejecutando el servidor, accede a:
 
 El proyecto implementa dos patrones de arquitectura complementarios:
 
-### MTV (Model-Template-View)
+### MVT (Model-View-Template)
 
-- **Model** (`apps/routes/domain/models.py`): Modelos ORM de Django
-- **Template** (`apps/routes/api/serializers.py`): Serialización JSON (DRF)
-- **View** (`apps/routes/api/views.py`): Vistas REST (ViewSets)
+- **Model** (`apps/routes/domain/models.py`): Django ORM models
+- **View** (`apps/routes/api/views.py`): REST views (ViewSets)
+- **Template** (`apps/routes/api/serializers.py`): JSON serialization (DRF)
 
 ### DDD (Domain-Driven Design)
 
@@ -290,9 +290,9 @@ docker compose -f docker-compose.prod.yml up -d
 5. Guardar credenciales en variables de entorno seguras
 6. Configurar SSL/HTTPS
 
-## 🤝 Equipo
+## 🤝 Desarrollado por
 
-Equipo de Desarrollo Falabella
+Jose Trespalacios B.
 
 ## 📄 Licencia
 
