@@ -1,6 +1,17 @@
 # Logistics Route Management API
 
-Sistema de gestión y optimización de rutas de logística con Django REST Framework.
+**API profesional para gestión integral de rutas logísticas**
+
+Sistema de gestión y optimización de rutas con Django REST Framework 3.14 y PostgreSQL 16.
+
+**Características principales:**
+- Importación masiva desde Excel (5000+ registros en ~5 segundos)
+- CRUD completo de rutas con validación automática
+- Ejecución individual y por lotes
+- Auditoría completa de todas las operaciones
+- 25 endpoints REST totalmente documentados
+- Autenticación Token-based
+- Documentación interactiva (Swagger + ReDoc + OpenAPI 3.0)
 
 ## Estándar de Respuestas
 
@@ -118,6 +129,10 @@ python manage.py migrate
 ```bash
 python manage.py runserver 0.0.0.0:8000
 ```
+
+#### Variables de Entorno (desarrollo local)
+
+```bash
 DB_PORT=5432
 DB_NAME=logistics
 DB_USER=postgres
@@ -133,24 +148,49 @@ DEBUG=True
 |--------|---|---|
 | **Comando** | `docker compose up` | `python manage.py runserver` |
 | **Setup** | Automático | Manual (pip install) |
-| **Pearl** | Aislado | Directo en máquina |
+| **Aislamiento** | Contenedorizado | Directo en máquina |
 | **Desarrollo** | Lento | Rápido (hot reload) |
 | **Producción** | ✅ Recomendado | ❌ No recomendado |
 
 ## Endpoints Principales
 
-```
-GET    /api/routes/              - Listar todas las rutas
-POST   /api/routes/              - Crear nueva ruta
-GET    /api/routes/{id}/         - Obtener detalle de ruta
-PUT    /api/routes/{id}/         - Actualizar ruta
-DELETE /api/routes/{id}/         - Eliminar ruta
+La API incluye **25 endpoints REST** organizados en las siguientes categorías:
 
-GET    /api/import-batch/        - Historial de importaciones
-POST   /api/import-batch/upload/ - Importar rutas desde Excel
+**Autenticación (1):**
+- `POST /api/token-auth/` - Obtener token de autenticación
 
-GET    /api/execution-log/       - Registro de ejecuciones
+**Rutas (11):**
 ```
+GET    /api/routes/                  - Listar todas las rutas (paginado)
+POST   /api/routes/                  - Crear nueva ruta
+GET    /api/routes/{id}/             - Obtener detalle de ruta
+PUT    /api/routes/{id}/             - Actualizar ruta
+PATCH  /api/routes/{id}/             - Actualización parcial
+DELETE /api/routes/{id}/             - Eliminar ruta
+POST   /api/routes/import/           - Importar masivamente desde Excel
+POST   /api/routes/{id}/execute/     - Ejecutar ruta individual
+POST   /api/routes/execute_routes/   - Ejecutar múltiples rutas
+GET    /api/routes/statistics/       - Estadísticas globales del sistema
+GET    /api/routes/execution_history/- Historial de ejecuciones de una ruta
+```
+
+**Catálogos (6):**
+```
+GET    /api/route-statuses/          - Listar estados disponibles
+GET    /api/route-statuses/{id}/     - Detalle de un estado
+GET    /api/locations/               - Listar/buscar ubicaciones
+GET    /api/locations/{id}/          - Detalle de una ubicación
+```
+
+**Registros (4):**
+```
+GET    /api/execution-logs/          - Historial de ejecuciones
+GET    /api/execution-logs/{id}/     - Detalle de una ejecución
+GET    /api/import-batches/          - Historial de importaciones
+GET    /api/import-batches/{id}/     - Detalle de un lote importado
+```
+
+Ver documentación completa en Swagger UI: http://localhost:8080/api/docs/
 
 ## Documentación de API
 
@@ -206,36 +246,42 @@ El proyecto implementa dos patrones de arquitectura complementarios:
 
 ## Configuración de la Base de Datos
 
-
-**Tablas**:
-- `route_status` - Catálogo de estados
-- `priority_catalog` - Catálogo de prioridades
-- `geographic_locations` - Ubicaciones geográficas
-- `routes` - Rutas principales
-- `route_payload` - Payloads JSON de rutas
-- `execution_logs` - Registro de ejecuciones
-- `import_batches` - Historial de importaciones
+**Tablas principales** (esquema `public`):
+- `routes_location` - Ubicaciones geográficas (origen/destino)
+- `routes_status` - Catálogo de estados de ruta (7 estados preinsertados)
+- `routes_route` - Rutas principales con origen, destino, distancia, prioridad
+- `routes_payload` - Payloads JSON asociados a rutas
+- `routes_execution_log` - Registro de ejecuciones y resultados
+- `routes_import_batch` - Historial de importaciones masivas
+- `auth_user` - Usuarios del sistema
+- `authtoken_token` - Tokens de autenticación
 
 ### Constraints Principales
 
 ```sql
--- Validación de ventana de tiempo
-CHECK (time_window_start < time_window_end)
-
--- Validación de coordenadas
+-- Ubicaciones: validación de coordenadas
 CHECK (latitude BETWEEN -90 AND 90)
 CHECK (longitude BETWEEN -180 AND 180)
 
--- Distancia positiva
+-- Rutas: distancia positiva
 CHECK (distance_km > 0)
 
--- Unicidad de combinación de ruta
-UNIQUE (origin, destination, time_window_start, time_window_end)
+-- Foreign Keys con ON DELETE CASCADE
+FOREIGN KEY (origin_id) REFERENCES routes_location(id)
+FOREIGN KEY (destination_id) REFERENCES routes_location(id)
+FOREIGN KEY (status_id) REFERENCES routes_status(id)
+FOREIGN KEY (batch_id) REFERENCES routes_import_batch(id)
 ```
 
-## Docker
+## Docker Compose
 
-### Levantar BD con Docker Compose
+### Levantar servicios completos
+
+```bash
+docker compose up --build
+```
+
+### Levantar solo PostgreSQL (desarrollo local)
 
 ```bash
 docker compose up -d postgres
@@ -247,7 +293,7 @@ Espera a que PostgreSQL esté listo. Puedes verificar con:
 docker compose logs postgres
 ```
 
-### Detener los Servicios
+### Detener servicios
 
 ```bash
 docker compose down
@@ -357,5 +403,5 @@ Para reportar issues o sugerencias, contacta al equipo de desarrollo.
 
 ---
 
-**Última actualización**: Febrero 2026
-**Versión**: 1.0.0 Producción
+**Última actualización**: Marzo 2026
+**Versión**: 1.0.0 Producción (Listo para deployment)
