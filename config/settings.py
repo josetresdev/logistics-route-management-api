@@ -87,9 +87,6 @@ DATABASES = {
         "PASSWORD": os.getenv("DB_PASSWORD", "postgres"),
         "HOST": os.getenv("DB_HOST", "localhost"),
         "PORT": os.getenv("DB_PORT", "5432"),
-        "OPTIONS": {
-            "options": f"-c search_path={os.getenv('DB_SCHEMA', 'logistics')}"
-        },
     }
 }
 
@@ -127,6 +124,7 @@ MEDIA_ROOT = BASE_DIR / "media"
 # Default primary key field type
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+
 # REST Framework Configuration
 REST_FRAMEWORK = {
     "DEFAULT_FILTER_BACKENDS": [
@@ -143,9 +141,17 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
+    "DEFAULT_PARSER_CLASSES": [
+        "rest_framework.parsers.MultiPartParser",
+        "rest_framework.parsers.FormParser",
+        "rest_framework.parsers.JSONParser",
+    ],
     "DEFAULT_EXCEPTION_HANDLER": "apps.routes.exceptions.custom_exception_handler",
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
+
+# Prevent redirect error for POST requests without trailing slash
+APPEND_SLASH = False
 
 # CORS Configuration
 CORS_ALLOWED_ORIGINS = os.getenv(

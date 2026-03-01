@@ -2,7 +2,60 @@
 
 Sistema de gestión y optimización de rutas de logística con Django REST Framework.
 
-## 📋 Requisitos Previos
+## � Estándar de Respuestas
+
+Todas las rutas de API siguen un estándar consistente de respuestas definido en [`apps/routes/utils/response.py`](apps/routes/utils/response.py):
+
+### Respuesta Exitosa
+
+```json
+{
+  "success": true,
+  "message": "Listado de rutas",
+  "data": [...],
+  "meta": {
+    "timestamp": "2026-03-01T10:30:00.000Z",
+    "version": "v1"
+  }
+}
+```
+
+### Respuesta con Error
+
+```json
+{
+  "success": false,
+  "error": {
+    "message": "No file provided",
+    "code": "NO_FILE_ERROR",
+    "meta": {
+      "timestamp": "2026-03-01T10:30:00.000Z",
+      "version": "v1"
+    }
+  }
+}
+```
+
+### Con Paginación
+
+```json
+{
+  "success": true,
+  "message": "Listado de rutas",
+  "data": [...],
+  "meta": {
+    "timestamp": "2026-03-01T10:30:00.000Z",
+    "pagination": {
+      "current_page": 1,
+      "per_page": 25,
+      "total_items": 150,
+      "total_pages": 6
+    }
+  }
+}
+```
+
+## �📋 Requisitos Previos
 
 - Python 3.10+
 - PostgreSQL 16 (vía Docker)
