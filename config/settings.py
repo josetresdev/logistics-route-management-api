@@ -156,8 +156,38 @@ APPEND_SLASH = False
 # CORS Configuration
 CORS_ALLOWED_ORIGINS = os.getenv(
     "CORS_ALLOWED_ORIGINS",
-    "http://localhost:3000,http://127.0.0.1:3000"
+    "http://localhost:3000,http://127.0.0.1:3000,http://localhost:4200,http://127.0.0.1:4200,http://localhost:4201,http://127.0.0.1:4201"
 ).split(",")
+
+CORS_EXPOSE_HEADERS = [
+    "Content-Type",
+    "Authorization",
+]
+
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_HEADERS = [
+    "accept",
+    "accept-encoding",
+    "authorization",
+    "content-type",
+    "dnt",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+]
+CORS_ALLOW_METHODS = [
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+]
+
+# Allow all origins in development (be careful in production)
+if DEBUG:
+    CORS_ALLOW_ALL_ORIGINS = True
 
 # Logging Configuration
 LOGGING = {
