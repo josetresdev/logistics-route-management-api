@@ -1,13 +1,13 @@
 {
   "info": {
     "name": "Logistics Route Management API",
-    "description": "Complete Postman collection for Logistics Route Management API with standardized responses",
+    "description": "Postman collection - Production API",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
     {
       "key": "base_url",
-      "value": "http://localhost:8000",
+      "value": "http://localhost:8080",
       "type": "string"
     },
     {
@@ -32,7 +32,7 @@
                   "    var jsonData = pm.response.json();",
                   "    if (jsonData.success && jsonData.data && jsonData.data.token) {",
                   "        pm.environment.set('auth_token', jsonData.data.token);",
-                  "        console.log('Token guardado: ' + jsonData.data.token);",
+                  "        console.log('Token saved: ' + jsonData.data.token);",
                   "    }",
                   "}"
                 ]
@@ -44,7 +44,8 @@
             "header": [
               {
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "type": "text"
               }
             ],
             "body": {
@@ -53,26 +54,11 @@
             },
             "url": {
               "raw": "{{base_url}}/api/token-auth/",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "token-auth",
-                ""
-              ]
+              "host": ["{{base_url}}"],
+              "path": ["api", "token-auth", ""]
             }
           },
-          "response": [
-            {
-              "name": "Success - New Standard Response",
-              "originalRequest": {},
-              "status": "200 OK",
-              "code": 200,
-              "_postman_previewlanguage": "json",
-              "body": "{\n  \"success\": true,\n  \"message\": \"Autenticación exitosa\",\n  \"data\": {\n    \"token\": \"a87bfff52d62d13e501e8cbaf787dc5e5fcbeeb3\",\n    \"user\": {\n      \"id\": 1,\n      \"username\": \"admin\",\n      \"email\": \"admin@example.com\"\n    }\n  },\n  \"meta\": {\n    \"timestamp\": \"2026-03-01T03:08:50.000Z\",\n    \"version\": \"v1\"\n  }\n}"
-            }
-          ]
+          "response": []
         }
       ]
     },
@@ -80,7 +66,7 @@
       "name": "Routes",
       "item": [
         {
-          "name": "List Routes (Paginated)",
+          "name": "List Routes",
           "request": {
             "method": "GET",
             "header": [
@@ -92,26 +78,15 @@
             ],
             "url": {
               "raw": "{{base_url}}/api/routes/?page=1&page_size=25",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "routes",
-                ""
-              ],
+              "host": ["{{base_url}}"],
+              "path": ["api", "routes", ""],
               "query": [
-                {
-                  "key": "page",
-                  "value": "1"
-                },
-                {
-                  "key": "page_size",
-                  "value": "25"
-                }
+                {"key": "page", "value": "1"},
+                {"key": "page_size", "value": "25"}
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Get Route Detail",
@@ -126,49 +101,170 @@
             ],
             "url": {
               "raw": "{{base_url}}/api/routes/1/",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "routes",
-                "1",
-                ""
-              ]
+              "host": ["{{base_url}}"],
+              "path": ["api", "routes", "1", ""]
             }
-          }
+          },
+          "response": []
         },
         {
-          "name": "Create Route (Manual)",
+          "name": "Create Route",
           "request": {
             "method": "POST",
             "header": [
               {
-                "key": "Content-Type",
-                "value": "application/json"
+                "key": "Authorization",
+                "value": "Token {{auth_token}}",
+                "type": "text"
               },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"origin_id\": 1,\n  \"destination_id\": 2,\n  \"distance_km\": 150.50,\n  \"priority\": 1,\n  \"time_window_start\": \"2026-03-01T08:00:00Z\",\n  \"time_window_end\": \"2026-03-01T17:00:00Z\",\n  \"status_id\": 1\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/routes/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "routes", ""]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Route",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"origin_id\": 1,\n  \"destination_id\": 2,\n  \"distance_km\": 155.00,\n  \"priority\": 2,\n  \"time_window_start\": \"2026-03-01T08:00:00Z\",\n  \"time_window_end\": \"2026-03-01T18:00:00Z\",\n  \"status_id\": 1\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/routes/1/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "routes", "1", ""]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Partial Update Route",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"priority\": 3\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/routes/1/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "routes", "1", ""]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Route",
+          "request": {
+            "method": "DELETE",
+            "header": [
               {
                 "key": "Authorization",
                 "value": "Token {{auth_token}}",
                 "type": "text"
               }
             ],
+            "url": {
+              "raw": "{{base_url}}/api/routes/1/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "routes", "1", ""]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Execute Single Route",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"origin\": \"Lima\",\n  \"destination\": \"Arequipa\",\n  \"distance_km\": 1000.50,\n  \"priority\": 1,\n  \"time_window_start\": \"2026-03-01T08:00:00Z\",\n  \"time_window_end\": \"2026-03-01T17:00:00Z\",\n  \"status\": \"PENDING\"\n}"
+              "raw": "{}"
             },
             "url": {
-              "raw": "{{base_url}}/api/routes/",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "routes",
-                ""
-              ]
+              "raw": "{{base_url}}/api/routes/1/execute/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "routes", "1", "execute", ""]
             }
-          }
+          },
+          "response": []
+        },
+        {
+          "name": "Execute Multiple Routes",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"route_ids\": [1, 2, 3]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/routes/execute_routes/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "routes", "execute_routes", ""]
+            }
+          },
+          "response": []
         },
         {
           "name": "Import Routes from Excel",
@@ -187,66 +283,17 @@
                 {
                   "key": "file",
                   "type": "file",
-                  "src": "dataset.xlsx",
-                  "disabled": false
+                  "src": "/path/to/routes.xlsx"
                 }
               ]
             },
             "url": {
               "raw": "{{base_url}}/api/routes/import",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "routes",
-                "import"
-              ]
+              "host": ["{{base_url}}"],
+              "path": ["api", "routes", "import"]
             }
           },
-          "response": [
-            {
-              "name": "Success - Import Response",
-              "originalRequest": {},
-              "status": "201 Created",
-              "code": 201,
-              "_postman_previewlanguage": "json",
-              "body": "{\n  \"success\": true,\n  \"message\": \"Importación completada\",\n  \"data\": {\n    \"batch_id\": 1,\n    \"total\": 5000,\n    \"valid\": 4706,\n    \"invalid\": 294,\n    \"errors\": [\n      {\n        \"row\": 2,\n        \"error\": \"Distance must be greater than 0\",\n        \"data\": {}\n      }\n    ]\n  },\n  \"meta\": {\n    \"timestamp\": \"2026-03-01T03:08:50.000Z\",\n    \"version\": \"v1\"\n  }\n}"
-            }
-          ]
-        },
-        {
-          "name": "Execute Routes",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Authorization",
-                "value": "Token {{auth_token}}",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"route_ids\": [1, 2, 3]\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/api/routes/execute/",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "routes",
-                "execute",
-                ""
-              ]
-            }
-          }
+          "response": []
         },
         {
           "name": "Get Route Execution History",
@@ -261,21 +308,14 @@
             ],
             "url": {
               "raw": "{{base_url}}/api/routes/1/execution_history/",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "routes",
-                "1",
-                "execution_history",
-                ""
-              ]
+              "host": ["{{base_url}}"],
+              "path": ["api", "routes", "1", "execution_history", ""]
             }
-          }
+          },
+          "response": []
         },
         {
-          "name": "Get Routes Statistics",
+          "name": "Routes Statistics",
           "request": {
             "method": "GET",
             "header": [
@@ -287,75 +327,11 @@
             ],
             "url": {
               "raw": "{{base_url}}/api/routes/statistics/",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "routes",
-                "statistics",
-                ""
-              ]
+              "host": ["{{base_url}}"],
+              "path": ["api", "routes", "statistics", ""]
             }
-          }
-        },
-        {
-          "name": "Update Route",
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Authorization",
-                "value": "Token {{auth_token}}",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"origin\": \"Lima\",\n  \"destination\": \"Arequipa\",\n  \"distance_km\": 1050.75,\n  \"priority\": 2,\n  \"time_window_start\": \"2026-03-01T08:00:00Z\",\n  \"time_window_end\": \"2026-03-01T18:00:00Z\",\n  \"status\": \"PENDING\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/api/routes/1/",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "routes",
-                "1",
-                ""
-              ]
-            }
-          }
-        },
-        {
-          "name": "Delete Route",
-          "request": {
-            "method": "DELETE",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Token {{auth_token}}",
-                "type": "text"
-              }
-            ],
-            "url": {
-              "raw": "{{base_url}}/api/routes/1/",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "routes",
-                "1",
-                ""
-              ]
-            }
-          }
+          },
+          "response": []
         }
       ]
     },
@@ -375,16 +351,30 @@
             ],
             "url": {
               "raw": "{{base_url}}/api/route-statuses/",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "route-statuses",
-                ""
-              ]
+              "host": ["{{base_url}}"],
+              "path": ["api", "route-statuses", ""]
             }
-          }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Route Status Detail",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/route-statuses/1/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "route-statuses", "1", ""]
+            }
+          },
+          "response": []
         }
       ]
     },
@@ -403,17 +393,15 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/api/locations/",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "locations",
-                ""
+              "raw": "{{base_url}}/api/locations/?search=Santiago",
+              "host": ["{{base_url}}"],
+              "path": ["api", "locations", ""],
+              "query": [
+                {"key": "search", "value": "Santiago"}
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Get Location Detail",
@@ -428,17 +416,11 @@
             ],
             "url": {
               "raw": "{{base_url}}/api/locations/1/",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "locations",
-                "1",
-                ""
-              ]
+              "host": ["{{base_url}}"],
+              "path": ["api", "locations", "1", ""]
             }
-          }
+          },
+          "response": []
         }
       ]
     },
@@ -457,26 +439,19 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/api/execution-logs/?page=1",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "execution-logs",
-                ""
-              ],
+              "raw": "{{base_url}}/api/execution-logs/?page=1&page_size=25",
+              "host": ["{{base_url}}"],
+              "path": ["api", "execution-logs", ""],
               "query": [
-                {
-                  "key": "page",
-                  "value": "1"
-                }
+                {"key": "page", "value": "1"},
+                {"key": "page_size", "value": "25"}
               ]
             }
-          }
+          },
+          "response": []
         },
         {
-          "name": "Filter by Route",
+          "name": "Get Execution Log Detail",
           "request": {
             "method": "GET",
             "header": [
@@ -487,23 +462,12 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/api/execution-logs/?route=1",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "execution-logs",
-                ""
-              ],
-              "query": [
-                {
-                  "key": "route",
-                  "value": "1"
-                }
-              ]
+              "raw": "{{base_url}}/api/execution-logs/1/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "execution-logs", "1", ""]
             }
-          }
+          },
+          "response": []
         }
       ]
     },
@@ -522,20 +486,19 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/api/import-batches/",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "import-batches",
-                ""
+              "raw": "{{base_url}}/api/import-batches/?page=1&page_size=25",
+              "host": ["{{base_url}}"],
+              "path": ["api", "import-batches", ""],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "page_size", "value": "25"}
               ]
             }
-          }
+          },
+          "response": []
         },
         {
-          "name": "Get Batch Detail",
+          "name": "Get Import Batch Detail",
           "request": {
             "method": "GET",
             "header": [
@@ -547,106 +510,11 @@
             ],
             "url": {
               "raw": "{{base_url}}/api/import-batches/1/",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "import-batches",
-                "1",
-                ""
-              ]
+              "host": ["{{base_url}}"],
+              "path": ["api", "import-batches", "1", ""]
             }
-          }
-        },
-        {
-          "name": "Filter by Status",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Token {{auth_token}}",
-                "type": "text"
-              }
-            ],
-            "url": {
-              "raw": "{{base_url}}/api/import-batches/?status=COMPLETED",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "import-batches",
-                ""
-              ],
-              "query": [
-                {
-                  "key": "status",
-                  "value": "COMPLETED"
-                }
-              ]
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "Documentation",
-      "item": [
-        {
-          "name": "OpenAPI Schema",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/api/schema/",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "schema",
-                ""
-              ]
-            }
-          }
-        },
-        {
-          "name": "Swagger UI",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/api/docs/",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "docs",
-                ""
-              ]
-            }
-          }
-        },
-        {
-          "name": "ReDoc",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/api/redoc/",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "redoc",
-                ""
-              ]
-            }
-          }
+          },
+          "response": []
         }
       ]
     }

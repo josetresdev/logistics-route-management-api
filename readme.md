@@ -2,7 +2,7 @@
 
 Sistema de gestión y optimización de rutas de logística con Django REST Framework.
 
-## � Estándar de Respuestas
+## Estándar de Respuestas
 
 Todas las rutas de API siguen un estándar consistente de respuestas definido en [`apps/routes/utils/response.py`](apps/routes/utils/response.py):
 
@@ -62,20 +62,20 @@ Todas las rutas de API siguen un estándar consistente de respuestas definido en
 - Docker & Docker Compose
 - pip
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Opción 1: TODO en UN COMANDO (Docker Compose)
 
-**BD + Backend automáticamente:**
+**Base de datos + Backend automáticamente:**
 
 ```bash
 docker compose up
 ```
 
 Eso es. El comando automáticamente:
-- ✅ Levanta PostgreSQL 16
-- ✅ Ejecuta migraciones de Django
-- ✅ Levanta el servidor Django en http://localhost:8080
+- Levanta PostgreSQL 16
+- Ejecuta migraciones de Django
+- Levanta el servidor Django en http://localhost:8080
 
 **Ver logs:**
 
@@ -137,7 +137,7 @@ DEBUG=True
 | **Desarrollo** | Lento | Rápido (hot reload) |
 | **Producción** | ✅ Recomendado | ❌ No recomendado |
 
-## 📡 Endpoints Principales
+## Endpoints Principales
 
 ```
 GET    /api/routes/              - Listar todas las rutas
@@ -152,19 +152,19 @@ POST   /api/import-batch/upload/ - Importar rutas desde Excel
 GET    /api/execution-log/       - Registro de ejecuciones
 ```
 
-## 📚 Documentación de API
+## Documentación de API
 
 Una vez ejecutando el servidor, accede a:
 
 | Servicio | URL | Descripción |
 |----------|-----|------------|
-| **Inicio** | http://localhost:8080/ | Dashboard de inicio |
-| **Swagger UI** | http://localhost:8080/api/docs/ | Documentación interactiva |
-| **ReDoc** | http://localhost:8080/api/redoc/ | Documentación estática |
-| **OpenAPI Schema** | http://localhost:8080/api/schema/ | Especificación OpenAPI 3.0 |
-| **Admin Panel** | http://localhost:8080/admin/ | Panel administrativo Django |
+| Home | http://localhost:8080/ | Dashboard de inicio |
+| Swagger UI | http://localhost:8080/api/docs/ | Documentación interactiva |
+| ReDoc | http://localhost:8080/api/redoc/ | Documentación estática |
+| OpenAPI Schema | http://localhost:8080/api/schema/ | Especificación OpenAPI 3.0 |
+| Admin Panel | http://localhost:8080/admin/ | Panel administrativo Django |
 
-## 🏗️ Estructura del Proyecto
+## Estructura del Proyecto
 
 ```
 .
@@ -187,7 +187,7 @@ Una vez ejecutando el servidor, accede a:
 └── readme.md              # Este archivo
 ```
 
-## 📊 Arquitectura
+## Arquitectura
 
 El proyecto implementa dos patrones de arquitectura complementarios:
 
@@ -204,7 +204,7 @@ El proyecto implementa dos patrones de arquitectura complementarios:
 - **Infrastructure Layer**: Repositorios, acceso a datos
 - **API Layer**: Controllers REST, serializers
 
-## 🔧 Configuración de la Base de Datos
+## Configuración de la Base de Datos
 
 
 **Tablas**:
@@ -233,7 +233,7 @@ CHECK (distance_km > 0)
 UNIQUE (origin, destination, time_window_start, time_window_end)
 ```
 
-## 🐳 Docker
+## Docker
 
 ### Levantar BD con Docker Compose
 
@@ -259,7 +259,7 @@ docker compose down
 docker compose logs -f postgres
 ```
 
-## 📦 Dependencias Principales
+## Dependencias Principales
 
 - **Django 5.0.1** - Framework web
 - **djangorestframework 3.14.0** - API REST
@@ -270,7 +270,7 @@ docker compose logs -f postgres
 
 Ver `requirements.txt` para lista completa.
 
-## 🔍 Monitoreo y Debugging
+## Monitoreo y Debugging
 
 ### Ver Estado de Servicios Docker
 
@@ -328,7 +328,7 @@ tail -f logs/api.log
 python manage.py createsuperuser
 ```
 
-## 🚢 Despliegue en Producción
+## Despliegue en Producción
 
 ```bash
 docker compose -f docker-compose.prod.yml up -d
@@ -336,22 +336,22 @@ docker compose -f docker-compose.prod.yml up -d
 
 **Requisitos antes de producción**:
 
-1. Cambiar `SECRET_KEY` en `.env`
+1. Cambiar SECRET_KEY en .env
 2. Cambiar contraseña de PostgreSQL
-3. Configurar `DEBUG=False`
-4. Configurar `ALLOWED_HOSTS` correctamente
+3. Configurar DEBUG=False
+4. Configurar ALLOWED_HOSTS correctamente
 5. Guardar credenciales en variables de entorno seguras
 6. Configurar SSL/HTTPS
 
-## 🤝 Desarrollado por
+## Desarrollado por
 
 Jose Trespalacios B.
 
-## 📄 Licencia
+## Licencia
 
 Privada - Falabella
 
-## 📞 Soporte
+## Soporte
 
 Para reportar issues o sugerencias, contacta al equipo de desarrollo.
 

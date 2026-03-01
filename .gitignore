@@ -6,6 +6,7 @@ __pycache__/
 .Python
 env/
 venv/
+.venv/
 ENV/
 build/
 develop-eggs/
@@ -22,6 +23,7 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+*.pyc
 
 # Django
 *.log
@@ -31,6 +33,7 @@ db.sqlite3
 /media
 staticfiles/
 /staticfiles
+*.db
 
 # Environment
 .env
@@ -44,10 +47,31 @@ staticfiles/
 *.swo
 *~
 .DS_Store
+.project
+.pydevproject
 
 # Testing
 .coverage
 .pytest_cache/
+.tox/
+htmlcov/
+
+# OS
+Thumbs.db
+.AppleDouble
+.LSOverride
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# Temporary files
+*.tmp
+
+# Node (if applicable)
+node_modules/
+npm-debug.log
 htmlcov/
 
 # OS

@@ -78,7 +78,6 @@ class RouteViewSet(viewsets.ModelViewSet):
         queryset = Route.objects.select_related(
             "origin",
             "destination",
-            "priority",
             "status",
             "batch"
         )
