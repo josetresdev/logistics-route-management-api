@@ -320,8 +320,9 @@ class ImportService:
                             )
                         except json.JSONDecodeError:
                             errors.append({
-                                "route_id": route_obj.id,
+                                "row": None,
                                 "error": "Invalid JSON payload",
+                                "data": row.to_dict() if hasattr(row, 'to_dict') else {}
                             })
 
                 if payload_objects:
@@ -339,10 +340,14 @@ class ImportService:
 
             return {
                 "batch_id": batch.id,
+                "batch_name": batch.filename,
                 "total": len(df),
-                "valid": len(valid_routes),
-                "invalid": len(errors),
-                "errors": errors,
+                "created": len(valid_routes),
+                "updated": 0,
+                "failed": len(errors),
+                "errors": errors if errors else [],
+                "status": batch.status,
+                "created_at": batch.created_at.isoformat(),
             }
 
         except FileNotFoundError as e:

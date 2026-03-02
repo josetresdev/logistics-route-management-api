@@ -167,13 +167,24 @@ class RouteViewSet(viewsets.ModelViewSet):
 
         Response:
         {
+            "success": true,
+            "message": "Importación completada",
             "data": {
                 "batch_id": 1,
-                "filename": "routes.xlsx",
+                "batch_name": "routes.xlsx",
                 "total": 100,
-                "valid": 98,
-                "invalid": 2,
-                "errors": [...]
+                "created": 98,
+                "updated": 0,
+                "failed": 2,
+                "status": "COMPLETED",
+                "errors": [
+                    {
+                        "row": 5,
+                        "error": "Distance must be greater than 0",
+                        "data": {...}
+                    }
+                ],
+                "created_at": "2024-01-15T10:30:00Z"
             },
             "errors": null,
             "status": 201
@@ -206,13 +217,20 @@ class RouteViewSet(viewsets.ModelViewSet):
 
         try:
             result = ImportService.import_file(file, batch_name)
+
+            # Determinar si fue exitoso basado en si hay registros creados
+            success = result.get("created", 0) > 0 or result.get("failed", 0) == 0
+            message = f"Importación completada: {result.get('created', 0)} registros creados, {result.get('failed', 0)} errores."
+
             return Response(
-                ResponseHelper.created(result, message="Importación completada"),
+                ResponseHelper.created(result, message=message),
                 status=status.HTTP_201_CREATED
             )
         except Exception as e:
             import traceback
             error_trace = traceback.format_exc()
+            print(f"Import error: {error_trace}")
+
             return Response(
                 ResponseHelper.error(
                     f"{str(e)}. Por favor, verifica que el archivo sea válido y tenga las hojas 'routes' y 'route_payload'.",
