@@ -1,4 +1,4 @@
-version: '3.9'
+version: "3.9"
 
 services:
   postgres:
@@ -24,11 +24,11 @@ services:
   django:
     build: .
     container_name: logistics-django
-    command: gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 3
+    command: gunicorn config.wsgi:application --bind 0.0.0.0:8080 --workers 3
     env_file:
       - .env
     ports:
-      - "8080:8000"
+      - "8080:8080"
     depends_on:
       postgres:
         condition: service_healthy
