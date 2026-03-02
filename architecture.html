@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arquitectura - Logistics Route Management</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            margin: 0;
+        }
+
+        .container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .diagram {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            border: 2px solid #e9ecef;
+        }
+
+        .mermaid {
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Arquitectura del Sistema</h1>
+        <div class="diagram">
+            <div class="mermaid">
+graph LR
+    subgraph Frontend["Frontend - Angular 21.2"]
+        UI["UI Components<br/>Material Design<br/>Routing"]
+        Services["Services<br/>API Service<br/>Auth Service"]
+    end
+
+    subgraph Backend["Backend - Django REST API"]
+        API["REST Endpoints<br/>Authentication<br/>Business Logic"]
+    end
+
+    subgraph Database["PostgreSQL 16"]
+        Tables["Tables<br/>Routes, Locations<br/>Execution Logs<br/>Users"]
+    end
+
+    Frontend -->|HTTP Requests<br/>JSON Data<br/>Token Auth| Backend
+    Backend -->|HTTP Responses<br/>JSON Data| Frontend
+    Backend -->|SQL Queries<br/>Data Persistence| Database
+    Database -->|Result Sets<br/>Data Retrieval| Backend
+
+    style Frontend fill:#e1f5ff,stroke:#01579b,stroke-width:2px
+    style Backend fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    style Database fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px
+            </div>
+        </div>
+    </div>
+    <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+</body>
+</html>

@@ -244,6 +244,50 @@ El proyecto implementa dos patrones de arquitectura complementarios:
 - **Infrastructure Layer**: Repositorios, acceso a datos
 - **API Layer**: Controllers REST, serializers
 
+## Diagrama de Arquitectura
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                   Frontend (Angular 21.2)                    │
+│  ┌──────────────────────────────────────────────────────┐   │
+│  │  UI Components (Material Design)                     │   │
+│  │  Services (ApiService, AuthService)                  │   │
+│  │  Routing (RxJS Observables)                          │   │
+│  └──────────────────────────────────────────────────────┘   │
+│                           │                                  │
+│           HTTP Requests (JSON + Token Auth)                  │
+└─────────────────────────────────────────────────────────────┘
+                            │
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────┐
+│                 Backend (Django REST API)                    │
+│  ┌──────────────────────────────────────────────────────┐   │
+│  │  REST Endpoints                                      │   │
+│  │  Authentication (Token-based)                        │   │
+│  │  Business Logic (Services, Validators)               │   │
+│  └──────────────────────────────────────────────────────┘   │
+│                           │                                  │
+│           SQL Queries (Data Persistence)                     │
+└─────────────────────────────────────────────────────────────┘
+                            │
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────┐
+│                    PostgreSQL 16 Database                    │
+│  ┌──────────────────────────────────────────────────────┐   │
+│  │  Tables:                                             │   │
+│  │  - routes (rutas principales)                        │   │
+│  │  - locations (ubicaciones)                           │   │
+│  │  - execution_logs (historial de ejecuciones)         │   │
+│  │  - import_batches (lotes importados)                 │   │
+│  │  - auth_user (usuarios y autenticación)              │   │
+│  └──────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────┘
+```
+
+Ver archivo [architecture.html](architecture.html) para diagrama interactivo.
+
 ## Configuración de la Base de Datos
 
 **Tablas principales** (esquema `public`):

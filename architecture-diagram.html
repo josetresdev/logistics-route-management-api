@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arquitectura - Logistics Route Management System</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 1400px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 20px;
+        }
+
+        .header h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .diagram-wrapper {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            overflow-x: auto;
+            border: 2px solid #e9ecef;
+        }
+
+        .mermaid {
+            display: flex;
+            justify-content: center;
+            min-height: 600px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        button {
+            padding: 12px 24px;
+            font-size: 1em;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f1f3f5;
+            color: #333;
+            border: 2px solid #dee2e6;
+        }
+
+        .btn-secondary:hover {
+            background: #e9ecef;
+            border-color: #adb5bd;
+        }
+
+        .info-box {
+            background: #e7f3ff;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-top: 30px;
+            border-radius: 6px;
+        }
+
+        .info-box h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .info-box ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .info-box li {
+            padding: 5px 0;
+            color: #333;
+        }
+
+        .info-box li:before {
+            content: "▸ ";
+            color: #667eea;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .legend {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .legend-color {
+            width: 30px;
+            height: 30px;
+            border-radius: 4px;
+            border: 2px solid #ddd;
+        }
+
+        .legend-text {
+            font-size: 0.95em;
+            color: #333;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #999;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Logistics Route Management System</h1>
+            <p>Diagrama de Arquitectura - Versión 1.0.0</p>
+        </div>
+
+        <div class="diagram-wrapper">
+            <div class="mermaid">
+graph TB
+    subgraph Client["Frontend - Angular 21.2"]
+        UI["UI Components<br/>Material Design"]
+        Services["Services<br/>ApiService, AuthService"]
+        Guards["Guards & Interceptors<br/>AuthGuard, ApiInterceptor"]
+        Routes["Routing & State<br/>RxJS Observables"]
+    end
+
+    subgraph API["Backend - Django REST API"]
+        subgraph Controllers["API Layer"]
+            Views["ViewSets REST<br/>RoutesViewSet, LocationViewSet"]
+            Serializers["Serializers<br/>RoutesSerializer, LocationSerializer"]
+            Auth["Authentication<br/>Token-based JWT"]
+        end
+
+        subgraph BizLogic["Application Layer - DDD"]
+            Services_API["Services<br/>RouteService, ImportService"]
+            Validators["Validators<br/>RouteValidator, DataValidator"]
+            UseCases["Use Cases<br/>ExecuteRoute, ImportBatch"]
+        end
+
+        subgraph Domain["Domain Layer - DDD"]
+            Models["Domain Models<br/>Route, Location, Status"]
+            Entities["Entities<br/>ExecutionLog, ImportBatch"]
+        end
+
+        subgraph Infra["Infrastructure Layer"]
+            Repos["Repositories<br/>RouteRepository, LocationRepository"]
+            ORM["Django ORM<br/>Models Definition"]
+        end
+    end
+
+    subgraph Database["PostgreSQL 16"]
+        Tables["Tables<br/>routes, locations, statuses<br/>execution_logs, import_batches<br/>auth_user, authtoken_token"]
+    end
+
+    subgraph DevOps["Docker & Deployment"]
+        Compose["Docker Compose<br/>Orchestration"]
+        Container_API["Container<br/>Django+Gunicorn"]
+        Container_DB["Container<br/>PostgreSQL"]
+        Nginx["Nginx<br/>Reverse Proxy"]
+    end
+
+    Client -->|HTTP/REST<br/>Token Auth| Guards
+    Guards -->|API Calls<br/>JSON| Auth
+    Auth -->|Request Processing| Views
+    Views -->|Serialize/Deserialize| Serializers
+    Serializers -->|Business Logic| Services_API
+    Services_API -->|Validation| Validators
+    Validators -->|Use Cases| UseCases
+    UseCases -->|Domain Operations| Models
+    Models -->|Entity Management| Entities
+    Entities -->|Data Access| Repos
+    Repos -->|ORM Operations| ORM
+    ORM -->|SQL Queries| Tables
+
+    Client -->|HTTP| Nginx
+    Nginx -->|Proxy| Container_API
+    Container_API -->|Connect| Container_DB
+    Container_DB -->|Persist| Tables
+
+    Compose -->|Orchestrate| Container_API
+    Compose -->|Orchestrate| Container_DB
+
+    style Client fill:#e1f5ff
+    style API fill:#f3e5f5
+    style Controllers fill:#fff3e0
+    style BizLogic fill:#fff3e0
+    style Domain fill:#fff3e0
+    style Infra fill:#fff3e0
+    style Database fill:#e8f5e9
+    style DevOps fill:#fce4ec
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn-primary" onclick="descargarDiagrama()">Descargar como Imagen PNG</button>
+            <button class="btn-secondary" onclick="copiarMermaid()">Copiar Código Mermaid</button>
+            <button class="btn-secondary" onclick="imprimirPagina()">Imprimir</button>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: #e1f5ff;"></div>
+                <div class="legend-text">Frontend Angular</div>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #f3e5f5;"></div>
+                <div class="legend-text">Backend API</div>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #fff3e0;"></div>
+                <div class="legend-text">Capas de Negocio</div>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #e8f5e9;"></div>
+                <div class="legend-text">Base de Datos</div>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #fce4ec;"></div>
+                <div class="legend-text">DevOps & Deployment</div>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <h3>Componentes Principales</h3>
+            <ul>
+                <li><strong>Frontend:</strong> Angular 21.2 con Material Design y componentes standalone</li>
+                <li><strong>Backend:</strong> Django REST Framework 3.14 con arquitectura DDD</li>
+                <li><strong>Base de Datos:</strong> PostgreSQL 16 con esquema relacional completo</li>
+                <li><strong>API Layer:</strong> ViewSets REST con autenticación token-based JWT</li>
+                <li><strong>Business Logic:</strong> Servicios, validadores y casos de uso</li>
+                <li><strong>Infrastructure:</strong> Repositorios y acceso a datos con Django ORM</li>
+                <li><strong>DevOps:</strong> Docker Compose para orquestación de contenedores</li>
+            </ul>
+        </div>
+
+        <div class="footer">
+            <p>Logistics Route Management System | Arquitectura v1.0.0 | Marzo 2026</p>
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+
+        function descargarDiagrama() {
+            alert('Para descargar la imagen:\n\n1. Abre este diagrama en tu navegador\n2. Haz clic derecho en el diagrama\n3. Selecciona "Guardar imagen como..."\n\nO usa: https://mermaid.live para más opciones de exportación');
+        }
+
+        function copiarMermaid() {
+            const codigo = `graph TB
+    subgraph Client["Frontend - Angular 21.2"]
+        UI["UI Components<br/>Material Design"]
+        Services["Services<br/>ApiService, AuthService"]
+        Guards["Guards & Interceptors<br/>AuthGuard, ApiInterceptor"]
+        Routes["Routing & State<br/>RxJS Observables"]
+    end
+
+    subgraph API["Backend - Django REST API"]
+        subgraph Controllers["API Layer"]
+            Views["ViewSets REST<br/>RoutesViewSet, LocationViewSet"]
+            Serializers["Serializers<br/>RoutesSerializer, LocationSerializer"]
+            Auth["Authentication<br/>Token-based JWT"]
+        end
+
+        subgraph BizLogic["Application Layer - DDD"]
+            Services_API["Services<br/>RouteService, ImportService"]
+            Validators["Validators<br/>RouteValidator, DataValidator"]
+            UseCases["Use Cases<br/>ExecuteRoute, ImportBatch"]
+        end
+
+        subgraph Domain["Domain Layer - DDD"]
+            Models["Domain Models<br/>Route, Location, Status"]
+            Entities["Entities<br/>ExecutionLog, ImportBatch"]
+        end
+
+        subgraph Infra["Infrastructure Layer"]
+            Repos["Repositories<br/>RouteRepository, LocationRepository"]
+            ORM["Django ORM<br/>Models Definition"]
+        end
+    end
+
+    subgraph Database["PostgreSQL 16"]
+        Tables["Tables<br/>routes, locations, statuses<br/>execution_logs, import_batches<br/>auth_user, authtoken_token"]
+    end
+
+    subgraph DevOps["Docker & Deployment"]
+        Compose["Docker Compose<br/>Orchestration"]
+        Container_API["Container<br/>Django+Gunicorn"]
+        Container_DB["Container<br/>PostgreSQL"]
+        Nginx["Nginx<br/>Reverse Proxy"]
+    end
+
+    Client -->|HTTP/REST<br/>Token Auth| Guards
+    Guards -->|API Calls<br/>JSON| Auth
+    Auth -->|Request Processing| Views
+    Views -->|Serialize/Deserialize| Serializers
+    Serializers -->|Business Logic| Services_API
+    Services_API -->|Validation| Validators
+    Validators -->|Use Cases| UseCases
+    UseCases -->|Domain Operations| Models
+    Models -->|Entity Management| Entities
+    Entities -->|Data Access| Repos
+    Repos -->|ORM Operations| ORM
+    ORM -->|SQL Queries| Tables
+
+    Client -->|HTTP| Nginx
+    Nginx -->|Proxy| Container_API
+    Container_API -->|Connect| Container_DB
+    Container_DB -->|Persist| Tables
+
+    Compose -->|Orchestrate| Container_API
+    Compose -->|Orchestrate| Container_DB
+
+    style Client fill:#e1f5ff
+    style API fill:#f3e5f5
+    style Controllers fill:#fff3e0
+    style BizLogic fill:#fff3e0
+    style Domain fill:#fff3e0
+    style Infra fill:#fff3e0
+    style Database fill:#e8f5e9
+    style DevOps fill:#fce4ec`;
+
+            navigator.clipboard.writeText(codigo).then(() => {
+                alert('Código copiado al portapapeles!\n\nPuedes pegarlo en https://mermaid.live para editarlo');
+            });
+        }
+
+        function imprimirPagina() {
+            window.print();
+        }
+    </script>
+</body>
+</html>
