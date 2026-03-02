@@ -24,32 +24,22 @@ services:
   django:
     build: .
     container_name: logistics-django
-    command: >
-      sh -c "sleep 10 && \
-             python manage.py migrate --noinput && \
-             python manage.py shell -c 'from django.contrib.auth import get_user_model; User = get_user_model();\nimport sys;\ntry:\n  if not User.objects.filter(username=\'admin\').exists():\n    User.objects.create_superuser(\'admin\', \'admin@local\', \'admin123\')\nexcept Exception as e:\n  print(e); sys.exit(1)' && \
-             python manage.py drf_create_token admin || true && \
-             gunicorn config.wsgi:application --bind 0.0.0.0:8080 --workers 4 --worker-class gthread --threads 2 --timeout 300 --graceful-timeout 60 --access-logfile logs/access.log --error-logfile logs/error.log"
     ports:
       - "8080:8080"
     environment:
       DEBUG: "True"
       SECRET_KEY: "django-insecure-development-key-change-in-production"
-      DATABASE_HOST: postgres
-      DATABASE_PORT: 5432
-      DATABASE_NAME: logistics
-      DATABASE_USER: postgres
-      DATABASE_PASSWORD: postgres
-      ALLOWED_HOSTS: "localhost,127.0.0.1,0.0.0.0"
+      DJANGO_SETTINGS_MODULE: "config.settings"
+
+      # DB Settings
       DB_ENGINE: "django.db.backends.postgresql"
       DB_NAME: "logistics"
       DB_USER: "postgres"
       DB_PASSWORD: "postgres"
       DB_HOST: "postgres"
       DB_PORT: "5432"
-      DJANGO_SETTINGS_MODULE: "config.settings"
-    volumes:
-      - .:/app
+
+      ALLOWED_HOSTS: "localhost,127.0.0.1,0.0.0.0"
     depends_on:
       postgres:
         condition: service_healthy
