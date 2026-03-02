@@ -66,7 +66,7 @@ Todas las rutas de API siguen un estándar consistente de respuestas definido en
 }
 ```
 
-## �📋 Requisitos Previos
+## Requisitos Previos
 
 - Python 3.10+
 - PostgreSQL 16 (vía Docker)
@@ -150,7 +150,7 @@ DEBUG=True
 | **Setup** | Automático | Manual (pip install) |
 | **Aislamiento** | Contenedorizado | Directo en máquina |
 | **Desarrollo** | Lento | Rápido (hot reload) |
-| **Producción** | ✅ Recomendado | ❌ No recomendado |
+| **Producción** | Recomendado | No recomendado |
 
 ## Endpoints Principales
 
