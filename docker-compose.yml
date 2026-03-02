@@ -24,26 +24,15 @@ services:
   django:
     build: .
     container_name: logistics-django
+    command: gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 3
+    env_file:
+      - .env
     ports:
-      - "8080:8080"
-    environment:
-      DEBUG: "True"
-      SECRET_KEY: "django-insecure-development-key-change-in-production"
-      DJANGO_SETTINGS_MODULE: "config.settings"
-
-      # DB Settings
-      DB_ENGINE: "django.db.backends.postgresql"
-      DB_NAME: "logistics"
-      DB_USER: "postgres"
-      DB_PASSWORD: "postgres"
-      DB_HOST: "postgres"
-      DB_PORT: "5432"
-
-      ALLOWED_HOSTS: "localhost,127.0.0.1,0.0.0.0"
+      - "8080:8000"
     depends_on:
       postgres:
         condition: service_healthy
-    restart: on-failure
+    restart: always
 
 volumes:
   logistics_pgdata:
