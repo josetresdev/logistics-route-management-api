@@ -1,3 +1,5 @@
+version: "3.9"
+
 services:
 
   django:
@@ -13,11 +15,8 @@ services:
       DB_NAME: logistics
       DB_USER: postgres
       DB_PASSWORD: postgres
-      DB_HOST: postgres
+      DB_HOST: 172.17.0.1
       DB_PORT: 5432
-
-    extra_hosts:
-      - "postgres:172.17.0.1"
 
     volumes:
       - ./logs:/app/logs
