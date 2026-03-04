@@ -17,7 +17,7 @@ services:
       DB_PORT: 5432
 
     extra_hosts:
-      - "postgres:host-gateway"
+      - "postgres:172.17.0.1"
 
     volumes:
       - ./logs:/app/logs
