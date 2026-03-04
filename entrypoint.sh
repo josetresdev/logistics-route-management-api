@@ -13,8 +13,7 @@ DB_PASSWORD=${DB_PASSWORD:-postgres}
 
 echo "[Entrypoint] Waiting for PostgreSQL..."
 
-# Esperar conexión real con password
-until PGPASSWORD=$DB_PASSWORD psql -h "$DB_HOST" -U "$DB_USER" -d "$DB_NAME" -c '\q' >/dev/null 2>&1
+until PGPASSWORD=$DB_PASSWORD psql -h "$DB_HOST" -U "$DB_USER" -p "$DB_PORT" -d "$DB_NAME" -c '\q' >/dev/null 2>&1
 do
   echo "[Entrypoint] PostgreSQL not ready yet..."
   sleep 3
@@ -22,7 +21,18 @@ done
 
 echo "[Entrypoint] PostgreSQL ready"
 
-echo "[Entrypoint] Running migrations..."
+echo "[Entrypoint] Running initial SQL if needed..."
+
+if [ -f "/app/db/init.sql" ]; then
+    PGPASSWORD=$DB_PASSWORD psql \
+        -h "$DB_HOST" \
+        -U "$DB_USER" \
+        -d "$DB_NAME" \
+        -f /app/db/init.sql || true
+fi
+
+echo "[Entrypoint] Running Django migrations..."
+
 python manage.py migrate --noinput
 
 echo "[Entrypoint] Creating admin user if not exists..."
@@ -42,23 +52,25 @@ else:
     print("Admin user already exists")
 END
 
-echo "[Entrypoint] Creating token (if not exists)..."
+echo "[Entrypoint] Creating token..."
+
 python manage.py drf_create_token admin || true
 
 echo "[Entrypoint] Collecting static files..."
+
 python manage.py collectstatic --noinput || true
 
 echo "[Entrypoint] Starting Gunicorn..."
 
 exec gunicorn config.wsgi:application \
-    --bind 0.0.0.0:8080 \
-    --workers 3 \
-    --worker-class gthread \
-    --threads 4 \
-    --timeout 120 \
-    --graceful-timeout 60 \
-    --max-requests 1000 \
-    --max-requests-jitter 50 \
-    --keep-alive 5 \
-    --access-logfile - \
-    --error-logfile -
+  --bind 0.0.0.0:8080 \
+  --workers 3 \
+  --worker-class gthread \
+  --threads 4 \
+  --timeout 120 \
+  --graceful-timeout 60 \
+  --max-requests 1000 \
+  --max-requests-jitter 50 \
+  --keep-alive 5 \
+  --access-logfile - \
+  --error-logfile -

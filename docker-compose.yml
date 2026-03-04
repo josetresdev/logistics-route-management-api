@@ -3,7 +3,7 @@ services:
   django:
     build: .
     container_name: logistics-django
-    restart: always
+    restart: unless-stopped
 
     env_file:
       - .env
@@ -23,6 +23,7 @@ services:
       - ./logs:/app/logs
       - ./staticfiles:/app/staticfiles
       - ./media:/app/media
+      - ./db/init.sql:/app/db/init.sql:ro
 
     ports:
       - "8080:8080"

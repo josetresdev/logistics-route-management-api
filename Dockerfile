@@ -21,7 +21,7 @@ COPY . .
 
 RUN chmod +x /app/entrypoint.sh
 
-RUN mkdir -p logs media staticfiles
+RUN mkdir -p /app/logs /app/media /app/staticfiles
 
 EXPOSE 8080
 
