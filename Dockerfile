@@ -9,6 +9,7 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y \
     postgresql-client \
     gcc \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
@@ -18,8 +19,10 @@ RUN pip install --upgrade pip && \
 
 COPY . .
 
+RUN chmod +x /app/entrypoint.sh
+
 RUN mkdir -p logs media staticfiles
 
 EXPOSE 8080
 
-CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8080", "--workers", "4", "--threads", "2"]
+ENTRYPOINT ["/app/entrypoint.sh"]
