@@ -1,25 +1,4 @@
-version: "3.9"
-
 services:
-  postgres:
-    image: postgres:16
-    container_name: logistics-postgres
-    restart: always
-    environment:
-      POSTGRES_DB: logistics
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      PGDATA: /var/lib/postgresql/data/pgdata
-    volumes:
-      - logistics_pgdata:/var/lib/postgresql/data
-      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
-    ports:
-      - "5432:5432"
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d logistics"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
 
   django:
     build: .
@@ -37,12 +16,10 @@ services:
       DB_HOST: postgres
       DB_PORT: 5432
 
-    depends_on:
-      postgres:
-        condition: service_healthy
+    extra_hosts:
+      - "postgres:host-gateway"
 
     volumes:
-      - .:/app
       - ./logs:/app/logs
       - ./staticfiles:/app/staticfiles
       - ./media:/app/media
@@ -51,6 +28,3 @@ services:
       - "8080:8080"
 
     entrypoint: ["/app/entrypoint.sh"]
-
-volumes:
-  logistics_pgdata:
