@@ -12,27 +12,49 @@ services:
       PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
       - logistics_pgdata:/var/lib/postgresql/data
-      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5432:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 10s
+      test: ["CMD-SHELL", "pg_isready -U postgres -d logistics"]
+      interval: 5s
       timeout: 5s
-      retries: 5
+      retries: 10
 
   django:
     build: .
     container_name: logistics-django
-    command: gunicorn config.wsgi:application --bind 0.0.0.0:8080 --workers 3
+    restart: always
+
     env_file:
       - .env
+
+    environment:
+      DB_ENGINE: django.db.backends.postgresql
+      DB_NAME: logistics
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_HOST: postgres
+      DB_PORT: 5432
+
+    command: >
+      sh -c "
+      echo 'Waiting for postgres...' &&
+      until pg_isready -h postgres -p 5432 -U postgres; do sleep 2; done &&
+      echo 'Postgres ready!' &&
+      python manage.py migrate --noinput &&
+      python manage.py collectstatic --noinput &&
+      gunicorn config.wsgi:application --bind 0.0.0.0:8080 --workers 4 --threads 2
+      "
+
+    volumes:
+      - .:/app
+
     ports:
       - "8080:8080"
+
     depends_on:
       postgres:
         condition: service_healthy
-    restart: always
 
 volumes:
   logistics_pgdata:
