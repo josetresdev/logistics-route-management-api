@@ -1,6 +1,7 @@
 version: "3.9"
 
 services:
+
   django:
     build: .
     container_name: logistics-django
@@ -14,8 +15,11 @@ services:
       DB_NAME: logistics
       DB_USER: postgres
       DB_PASSWORD: postgres
-      DB_HOST: 172.17.0.1
+      DB_HOST: host.docker.internal
       DB_PORT: 5432
+
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
     volumes:
       - ./logs:/app/logs
