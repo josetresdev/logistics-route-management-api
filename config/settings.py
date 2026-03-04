@@ -29,6 +29,28 @@ if os.getenv("SECURE_PROXY_SSL_HEADER"):
 USE_X_FORWARDED_HOST = True
 SECURE_SSL_REDIRECT = False  # nginx ya maneja redirect
 
+# CSRF Configuration para producción
+CSRF_TRUSTED_ORIGINS = [
+    "https://logistics.josetrespalaciosbedoya.co",
+    "https://api.logistics.josetrespalaciosbedoya.co",
+    "http://localhost:3000",
+    "http://localhost:4200",
+    "http://localhost:8000",
+    "http://127.0.0.1:3000",
+    "http://127.0.0.1:4200",
+    "http://127.0.0.1:8000",
+]
+
+CSRF_COOKIE_SECURE = not DEBUG  # True en producción
+CSRF_COOKIE_HTTPONLY = False  # Debe ser False para que JS pueda leerlo
+CSRF_COOKIE_AGE = 31449600  # 1 año
+CSRF_USE_SESSIONS = False
+
+SESSION_COOKIE_SECURE = not DEBUG  # True en producción
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_AGE = 1209600  # 2 semanas
+SESSION_COOKIE_SAMESITE = "Lax"
+
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
